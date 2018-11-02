@@ -21,7 +21,9 @@ cd $HOME/code/
 
 1. Clone this repository:
     ```bash
-    git clone https://github.com/lianghongzhuo/grasp-pointnet.git
+    cd $HOME/code
+    git clone https://github.com/lianghongzhuo/PointNetGPD.git
+    mv PointNetGPD grasp-pointnet
     ```
 
 1. Install our requirements in `requirements.txt`
