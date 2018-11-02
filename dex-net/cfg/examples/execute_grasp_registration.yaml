@@ -1,0 +1,5 @@
+database: /path/to/your/example.hdf5
+dataset: mini_dexnet
+gripper: yumi_metal_spline
+metric: robust_ferarri_canny
+object: bar_clamp

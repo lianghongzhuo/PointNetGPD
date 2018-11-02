@@ -1,0 +1,43 @@
+# Grasping params (relative paths for gripper_dir and cache_dir are resolved relative to dex-net root)
+gripper_dir: data/grippers
+cache_dir: .dexnet
+
+# Object gen params
+path_to_sdfgen: SDFGen
+sdf_dim: 100
+sdf_padding: 5
+stp_min_prob: 0.01
+
+use_default_mass: True
+default_mass: 1.0
+obj_density: 4000.0 
+
+use_uniform_com: True
+
+rescale_objects: True
+obj_target_scale: 0.040
+obj_scaling_mode: min
+
+# Visualization params
+show_gripper: False
+max_plot_gripper: 500
+min_metric: 0.001
+table_extent: 0.15
+animate: False
+
+# Metric params
+quality_scale: 0.3
+
+# Object export params
+export_format: obj
+export_scale: 1.0
+export_overwrite: True
+
+# Metric params. Ignore this unless you really know what you're doing
+metrics:
+  robust_ferrari_canny: notset
+  robust_wrench_resistance: notset
+  ferrari_canny: notset
+  force_closure: notset
+  robust_force_closure: notset
+  robust_partial_closure: notset

@@ -1,0 +1,13 @@
+field_name: depth_ims_tf_table
+field_type: depth
+
+print_fields:
+  - robust_ferrari_canny
+  - hand_poses
+
+filter:
+  robust_ferrari_canny:
+    greater_than: 0.002
+
+gripper_width_px: 13.5
+font_size: 15

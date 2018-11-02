@@ -1,0 +1,118 @@
+# General params
+show_gripper: 1
+max_plot_gripper: 250
+table_extent: 0.15
+gravity_accel: 9.81
+custom_stable_poses: False
+overwrite_grasps: False
+
+# Grasping params
+gripper_dir: data/grippers
+cache_dir: .dexnet
+
+grasp_sampler: antipodal
+target_num_grasps: 25
+num_grasp_rots: 32
+
+sampling_friction_coef: 2.0
+num_cone_faces: 8
+max_grasp_sampling_iters: 5
+grasp_samples_per_surface_point: 2
+max_num_surface_points: 100
+min_contact_dist: 0.0025
+dir_prior: 1.0
+
+# Metric params
+quality_scale: 0.3
+metric_display_rate: 10
+
+metrics:
+  robust_ferrari_canny:
+    # required parameters
+    quality_method: ferrari_canny_L1_force_only
+    # friction_coef: 0.5
+    num_cone_faces: 8
+    soft_fingers: 0
+    quality_type: robust_quasi_static
+    all_contacts_required: 1
+    check_approach: False
+    
+    # optional deterministic parameters
+    torque_scaling: 1.0
+    wrench_norm_thresh: 0.001
+    wrench_regularizer: 0.0000000001
+    
+    # PARAMS for robust grasp metrics
+    # uncertainty
+    grasp_uncertainty:
+      sigma_grasp_trans_x: 0.005
+      sigma_grasp_trans_y: 0.005
+      sigma_grasp_trans_z: 0.005
+      sigma_grasp_rot_x: 0.001
+      sigma_grasp_rot_y: 0.001
+      sigma_grasp_rot_z: 0.001
+      num_prealloc_samples: 0
+    obj_uncertainty:
+      sigma_obj_trans_x: 0.01
+      sigma_obj_trans_y: 0.01
+      sigma_obj_trans_z: 0.01
+      sigma_obj_rot_x: 0.01
+      sigma_obj_rot_y: 0.01
+      sigma_obj_rot_z: 0.01
+      sigma_obj_scale: 0.00
+      num_prealloc_samples: 10
+    params_uncertainty:
+      sigma_friction_coef: 0.1
+      num_prealloc_samples: 0
+
+    # sampling params
+    num_quality_samples: 25
+    sampling_snapshot_rate: 10
+
+  force_closure:
+    quality_method: force_closure
+    # friction_coef: 0.9
+    num_cone_faces: 8
+    soft_fingers: 1
+    quality_type: quasi_static    
+    all_contacts_required: 1
+    check_approach: False
+
+    # optional deterministic parameters
+    torque_scaling: 0.01
+    wrench_norm_thresh: 0.001
+    wrench_regularizer: 0.0000000001
+
+# Object gen params
+path_to_sdfgen: SDFGen
+sdf_dim: 100
+sdf_padding: 5
+mass_thresh: 0.01
+stp_min_prob: 0.01
+
+use_default_mass: 1
+default_mass: 1.0
+obj_density: 4000.0
+
+use_uniform_com: 1
+ask_com: 0
+
+rescale_objects: 1
+obj_target_scale: 0.040
+obj_scaling_mode: min
+
+auto_render_images: 0
+
+# Rendering params
+focal: 734
+width: 227
+height: 227
+min_radius: 0.55
+max_radius: 0.65
+num_radii: 2
+min_elev: 0.01
+max_elev: 0.1 # in multiples of pi
+num_elev: 2
+num_az: 8
+num_roll: 1
+min_p: 0.01

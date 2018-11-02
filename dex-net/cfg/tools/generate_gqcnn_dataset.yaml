@@ -1,0 +1,105 @@
+# Dex-Net Database params
+database_name: /path/to/your/example.hdf5
+
+# Dataset params
+gripper: yumi_metal_spline
+
+# Target objects
+target_objects:
+  mini_dexnet:
+    - bar_clamp
+    - gearbox
+    - nozzle
+    - part1
+    - part3
+    - pawn
+    - turbine_housing
+    - vase
+
+# Params for random variables controlling the environment (camera intr, camera and object poses)
+env_rv_params:
+  # Camera intrinsics
+  min_f: 520
+  max_f: 530
+  min_cx: 299.5
+  max_cx: 299.5
+  min_cy: 299.5
+  max_cy: 299.5
+  im_width: 600
+  im_height: 600
+
+  # Camera pose
+  min_radius: 0.65
+  max_radius: 0.75
+  min_elev: 0.1
+  max_elev: 5.0 # in degrees
+  min_az: 0.0
+  max_az: 360.0 # degrees
+  min_roll: -0.2
+  max_roll: 0.2 # degrees
+
+  # Object pose
+  min_x: -0.1
+  max_x: 0.1
+  min_y: -0.1
+  max_y: 0.1
+
+# Dataset gen params
+images_per_stable_pose: 5
+stable_pose_min_p: 0.0
+
+# GQ-CNN params
+gqcnn:
+  crop_width: 96
+  crop_height: 96
+  final_width: 32
+  final_height: 32
+
+# Table alignment constraint parameters
+table_alignment:
+  max_approach_table_angle: 5 # in degrees
+  max_approach_offset: 10 # in degrees
+  num_approach_offset_samples: 5
+
+# Collision checking constraint parameters
+collision_checking:
+  table_offset: 0.005
+  table_mesh_filename: data/meshes/table.obj
+
+  approach_dist: 0.1
+  delta_approach: 0.005
+
+# Tensor dataset config
+tensors:
+  datapoints_per_file: 1000
+  fields:
+    depth_ims_tf_table:
+      dtype: float32
+      channels: 1
+    obj_masks:
+      dtype: uint8
+      channels: 1
+    camera_poses:
+      dtype: float32
+      height: 7
+    camera_intrs:
+      dtype: float32
+      height: 4
+    hand_poses:
+      dtype: float32
+      height: 7
+    collision_free:
+      dtype: uint32
+    obj_labels:
+      dtype: uint32
+    pose_labels:
+      dtype: uint32
+    image_labels:
+      dtype: uint32
+
+# Debugging params
+vis:
+  candidate_grasps: 0
+  rendered_images: 0
+  grasp_images: 0
+debug: 0
