@@ -225,3 +225,13 @@ If you found PointNetGPD useful in your research, please consider citing:
   year={2018}
 }
 ```
+
+## Acknowledgement
+- [gpg](https://github.com/atenpas/gpg)
+- [gpd](https://github.com/atenpas/gpd)
+- [dex-net](https://github.com/BerkeleyAutomation/dex-net)
+- [meshpy](https://github.com/BerkeleyAutomation/meshpy)
+- [SDFGen](https://github.com/christopherbatty/SDFGen)
+- [pyntcloud](https://github.com/daavoo/pyntcloud)
+- [metu-ros-pkg](https://github.com/kadiru/metu-ros-pkg)
+- [mayavi](https://github.com/enthought/mayavi)
