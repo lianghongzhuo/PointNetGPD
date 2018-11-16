@@ -5,7 +5,7 @@ PointNetGPD is light-weighted and can directly process the 3D point cloud that l
 
 To further improve our proposed model, we generate a larger-scale grasp dataset with 350k real point cloud and grasps with the [YCB objects Dataset](http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/) for training.
 
-<img src="data/grasp_pipeline.svg" width="100%">
+<img src="docs/data/grasp_pipeline.svg" width="100%">
 
 ## Video
 
