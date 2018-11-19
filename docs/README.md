@@ -8,8 +8,8 @@ To further improve our proposed model, we generate a larger-scale grasp dataset 
 <img src="data/grasp_pipeline.svg" width="100%">
 
 ## Video
+<iframe width="560" height="315" src="https://www.youtube.com/embed/RBFFCLiWhRw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-[![Video for PointNetGPD](https://img.youtube.com/vi/RBFFCLiWhRw/0.jpg )](https://www.youtube.com/watch?v=RBFFCLiWhRw)
 ## Before Install
 All the code should be installed in the following directory:
 ```
