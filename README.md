@@ -1,5 +1,5 @@
 # PointNetGPD: Detecting Grasp Configurations from Point Sets
-PointNetGPD ([arXiv](https://arxiv.org/abs/1809.06267)) is an end-to-end grasp evaluation model to address the challenging problem of localizing robot grasp configurations directly from the point cloud.
+PointNetGPD (ICRA 2019, [arXiv](https://arxiv.org/abs/1809.06267)) is an end-to-end grasp evaluation model to address the challenging problem of localizing robot grasp configurations directly from the point cloud.
 
 PointNetGPD is light-weighted and can directly process the 3D point cloud that locates within the gripper for grasp evaluation. Taking the raw point cloud as input, our proposed grasp evaluation network can capture the complex geometric structure of the contact area between the gripper and the object even if the point cloud is very sparse.
 
@@ -218,11 +218,11 @@ This code will check the norm calculated by meshpy and pcl library.
 If you found PointNetGPD useful in your research, please consider citing:
 
 ```plain
-@article{liang2018pointnetgpd,
+@inproceedings{liang2018pointnetgpd,
   title={PointNetGPD: Detecting Grasp Configurations from Point Sets},
   author={Liang, Hongzhuo and Ma, Xiaojian and Li, Shuang and G{\"o}rner, Michael and Tang, Song and Fang, Bin and Sun, Fuchun and Zhang, Jianwei},
-  journal={arXiv preprint arXiv:1809.06267},
-  year={2018}
+  booktitle={IEEE International Conference on Robotic and Automation (ICRA)},
+  year={2019}
 }
 ```
 
