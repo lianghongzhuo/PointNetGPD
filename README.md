@@ -221,7 +221,7 @@ If you found PointNetGPD useful in your research, please consider citing:
 @inproceedings{liang2018pointnetgpd,
   title={PointNetGPD: Detecting Grasp Configurations from Point Sets},
   author={Liang, Hongzhuo and Ma, Xiaojian and Li, Shuang and G{\"o}rner, Michael and Tang, Song and Fang, Bin and Sun, Fuchun and Zhang, Jianwei},
-  booktitle={IEEE International Conference on Robotic and Automation (ICRA)},
+  booktitle={IEEE International Conference on Robotics and Automation (ICRA)},
   year={2019}
 }
 ```
