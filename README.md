@@ -218,7 +218,7 @@ This code will check the norm calculated by meshpy and pcl library.
 If you found PointNetGPD useful in your research, please consider citing:
 
 ```plain
-@inproceedings{liang2018pointnetgpd,
+@inproceedings{liang2019pointnetgpd,
   title={PointNetGPD: Detecting Grasp Configurations from Point Sets},
   author={Liang, Hongzhuo and Ma, Xiaojian and Li, Shuang and G{\"o}rner, Michael and Tang, Song and Fang, Bin and Sun, Fuchun and Zhang, Jianwei},
   booktitle={IEEE International Conference on Robotics and Automation (ICRA)},

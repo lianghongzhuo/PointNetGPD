@@ -1,1 +1,3 @@
 theme: jekyll-theme-cayman
+title: PointNetGPD: Detecting Grasp Configurations from Point Sets
+description: PointNetGPD is an end-to-end grasp evaluation model to address the challenging problem of localizing robot grasp configurations directly from the point cloud.
