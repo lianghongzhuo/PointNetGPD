@@ -57,6 +57,10 @@ if __name__ == '__main__':
     file_list_all = get_file_name(file_dir)
     object_numbers = file_list_all.__len__()
 
+    # generate obj from ply file
+    for i in file_list_all:
+         generate_obj_from_ply(i+"/google_512k/nontextured.ply")
+         print("finish", i)
     # The operation for the multi core
     cores = multiprocessing.cpu_count()
     pool = multiprocessing.Pool(processes=cores)
