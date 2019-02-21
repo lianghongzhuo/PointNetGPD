@@ -151,7 +151,6 @@ if __name__ == '__main__':
     file_dir = home_dir + "/dataset/ycb_meshes_google/objects"
     file_list_all = get_file_name(file_dir)
     object_numbers = file_list_all.__len__()
-    dexnet_api = dexnet.DexNet()
 
     job_list = np.arange(object_numbers)
     job_list = list(job_list)
