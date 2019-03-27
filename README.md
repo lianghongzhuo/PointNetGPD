@@ -139,6 +139,7 @@ cd $HOME/code/
     python Cal_norm.py
     ```
 This code will check the norm calculated by meshpy and pcl library.
+
 ## Training the network
 1. Data prepare:
     ```bash
@@ -159,6 +160,7 @@ This code will check the norm calculated by meshpy and pcl library.
     cd ..
     python ycb_cloud_generate.py
     ```
+    Note: Estimated running time at our `Intel(R) Xeon(R) CPU E5-2690 v4 @ 2.60GHz` dual CPU with 56 Threads is 36 hours. Please also remove objects beyond the capacity of the gripper.
 
 1. Run the experiments:
     ```bash
