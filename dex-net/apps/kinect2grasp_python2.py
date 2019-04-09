@@ -39,7 +39,7 @@ except ImportError:
     print("Can not import mayavi")
     mlab = None
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath("__file__")))))
-sys.path.append(os.environ['HOME'] + "/code/grasp-pointnet/pointGPD")
+sys.path.append(os.environ['HOME'] + "/code/grasp-pointnet/PointNetGPD")
 from main_test import test_network, model, args
 
 # global config:
