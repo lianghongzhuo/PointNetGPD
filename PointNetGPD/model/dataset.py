@@ -86,9 +86,9 @@ class PointGraspDataset(torch.utils.data.Dataset):
         right = (np.dot(transform, np.array([right[0], right[1], right[2], 1])))[:3]
         # bottom = (transform @ np.array([bottom[0], bottom[1], bottom[2], 1]))[:3]
         center = (np.dot(transform, np.array([center[0], center[1], center[2], 1])))[:3]
-        binormal = (np.dot(transform, np.array([binormal[0], binormal[1], binormal[2], 1])))[:3].reshape(3, 1)
-        approach = (np.dot(transform, np.array([approach[0], approach[1], approach[2], 1])))[:3].reshape(3, 1)
-        minor_normal = (np.dot(transform, np.array([minor_normal[0], minor_normal[1], minor_normal[2], 1])))[:3].reshape(3, 1)
+        binormal = (np.dot(transform, np.array([binormal[0], binormal[1], binormal[2], 0])))[:3].reshape(3, 1)
+        approach = (np.dot(transform, np.array([approach[0], approach[1], approach[2], 0])))[:3].reshape(3, 1)
+        minor_normal = (np.dot(transform, np.array([minor_normal[0], minor_normal[1], minor_normal[2], 0])))[:3].reshape(3, 1)
         matrix = np.hstack([approach, binormal, minor_normal]).T
         # pc_t/left_t/right_t is in local coordinate(with center as origin)
         # other(include pc) are in pc coordinate
