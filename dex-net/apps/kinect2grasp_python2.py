@@ -140,9 +140,6 @@ def cal_grasp(msg, cam_pos_):
     # begin voxel points
     n = n_voxel  # parameter related to voxel method
     # gpg improvements, highlights: flexible n parameter for voxelizing.
-    points_[:, 0] = points_[:, 0] + 0.025  # liang: as the kinect2 is not well colibrated, here is a work around
-    points_[:, 2] = points_[:, 2] #+ 0.018  # liang: as the kinect2 is not well colibrated, here is a work around
-
     points_voxel_ = get_voxel_fun(points_, n)
     if len(points_) < 2000:  # should be a parameter
         while len(points_voxel_) < len(points_)-15:
