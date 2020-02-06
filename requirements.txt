@@ -1,8 +1,7 @@
+networkx==2.2
 scipy
 h5py
 numpy
-ipython
-matplotlib
 NearPy
 Pillow
 python-dateutil
@@ -13,12 +12,10 @@ six
 trimesh
 pyhull
 cvxopt
-mayavi
 pandas
 visualization
 pyquaternion
 numba
 autolab-core
 autolab-perception
-torch>=0.4.1
-tensorboardX
+

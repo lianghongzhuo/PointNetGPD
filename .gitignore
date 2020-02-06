@@ -1,6 +1,7 @@
 dex-net/apps/generated_grasps/
 .dexnet/
-
+python-pcl/
+.idea/
 PointNetGPD/assets/
 PointNetGPD/data/
 PointNetGPD/OLD/
