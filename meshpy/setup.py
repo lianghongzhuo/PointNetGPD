@@ -9,12 +9,10 @@ import os
 
 class PostDevelopCmd(develop):
     def run(self):
-        os.system('sh install_meshrender.sh')
         develop.run(self)
 
 class PostInstallCmd(install):
     def run(self):
-        os.system('sh install_meshrender.sh')
         install.run(self)
 
 requirements = [

@@ -1,9 +1,3 @@
-try:
-    # from meshpy import meshrender
-    import meshrender
-except:
-    print('Unable to import meshrender shared library! Rendering will not work. Likely due to missing Boost.Numpy')
-    print('Boost.Numpy can be installed following the instructions in https://github.com/ndarray/Boost.NumPy')
 from meshpy.mesh import Mesh3D
 from meshpy.image_converter import ImageToMeshConverter
 from meshpy.obj_file import ObjFile
