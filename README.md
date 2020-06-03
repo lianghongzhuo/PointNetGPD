@@ -104,12 +104,16 @@ cd $HOME/code/
     ```bash
     git clone https://github.com/strawlab/python-pcl.git
     pip install --upgrade pip
-    pip install cython==0.25.2
+    pip install cython
     pip install numpy
     cd python-pcl
     python setup.py build_ext -i
     python setup.py develop
     ```
+    - If you use ubuntu 18.04 and conda environment, you may encounter a compile error when install python-pcl, here is a work around:
+        - Use python 3.6: `conda install python=3.6`
+        - `conda install vtk=8.1`
+        - Use my fork: https://github.com/lianghongzhuo/python-pcl.git
 4. Generate sdf file for each nontextured.obj file using SDFGen by running:
     ```bash
     cd $HOME/code/grasp-pointnet/dex-net/apps
@@ -174,7 +178,7 @@ This code will check the norm calculated by meshpy and pcl library.
 
     and run an experiment for 200 epoch
     ```
-    python main_1v.py --epoch 200
+    python main_1v.py --epoch 200 --mode train --batch-size x (x>1)
     ```
 
     File name and corresponding experiment:
