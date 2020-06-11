@@ -5,18 +5,15 @@
 # Description:
 # Date       : 05/08/2018 6:04 PM
 # File Name  : kinect2grasp_python2.py
-# Note: this file is written in Python2
+# Note: only this file is written in Python2 for ROS
 
 import torch
 import rospy
 from sensor_msgs.msg import PointCloud2
 from visualization_msgs.msg import MarkerArray
 from visualization_msgs.msg import Marker
-from gpd.msg import GraspConfig
-from gpd.msg import GraspConfigList
 import tf
 import moveit_commander
-
 import numpy as np
 import pointclouds
 import voxelgrid
@@ -31,7 +28,12 @@ from os import path
 import time
 from scipy.stats import mode
 import multiprocessing as mp
-
+try:
+    from gpd_grasp_msgs.msg import GraspConfig
+    from gpd_grasp_msgs.msg import GraspConfigList
+except ImportError:
+    print("Please install grasp msgs from https://github.com/TAMS-Group/gpd_grasp_msgs in your ROS workspace")
+    exit()
 
 try:
     from mayavi import mlab
