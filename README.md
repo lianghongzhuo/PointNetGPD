@@ -67,8 +67,6 @@ cd $HOME/code/
     ```
 
 
-
-
 ## Generate Grasp Dataset
 
 1. Download YCB object set from [YCB Dataset](http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/).
@@ -100,7 +98,7 @@ cd $HOME/code/
     cd SDFGen
     sudo sh install.sh
     ```
-3. Install python pcl library [python-pcl](https://github.com/strawlab/python-pcl):
+4. Install python pcl library [python-pcl](https://github.com/strawlab/python-pcl):
     ```bash
     git clone https://github.com/strawlab/python-pcl.git
     pip install --upgrade pip
@@ -110,16 +108,15 @@ cd $HOME/code/
     python setup.py build_ext -i
     python setup.py develop
     ```
-    - If you use ubuntu 18.04 and conda environment, you may encounter a compile error when install python-pcl, here is a work around:
-        - Use python 3.6: `conda install python=3.6`
-        - `conda install vtk=8.1`
+    - If you use **ubuntu 18.04** and **conda environment**, you may encounter a compile error when install python-pcl, this is because conda has a higer version of vtk, here is a work around:
+        - `conda install vtk=8.2`
         - Use my fork: https://github.com/lianghongzhuo/python-pcl.git
-4. Generate sdf file for each nontextured.obj file using SDFGen by running:
+5. Generate sdf file for each nontextured.obj file using SDFGen by running:
     ```bash
     cd $HOME/code/grasp-pointnet/dex-net/apps
     python read_file_sdf.py
     ```
-5. Generate dataset by running the code:
+6. Generate dataset by running the code:
     ```bash
     cd $HOME/code/grasp-pointnet/dex-net/apps
     python generate-dataset-canny.py [prefix]
