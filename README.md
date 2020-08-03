@@ -66,8 +66,10 @@ cd $HOME/code/
     "init_bite":
     ```
 
+## Genearted Grasp Dataset Download
+You can download the dataset from: https://tams.informatik.uni-hamburg.de/research/datasets/PointNetGPD_grasps_dataset.zip
 
-## Generate Grasp Dataset
+## Generate Your Own Grasp Dataset
 
 1. Download YCB object set from [YCB Dataset](http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/).
 2. Manage your dataset here:
