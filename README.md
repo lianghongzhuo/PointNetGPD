@@ -192,7 +192,7 @@ This code will check the norm calculated by meshpy and pcl library.
 
     For GPD experiments, you may change the input channel number by modifying `input_chann` in the experiment scripts(only 3 and 12 channels are available)
 
-## Using the trained network (Only work in python2 as we use ROS)
+## Using the trained network
 
 1. Get UR5 robot state:
 
@@ -206,7 +206,7 @@ This code will check the norm calculated by meshpy and pcl library.
     All the input, output messages are using ROS messages.
     ```
     cd $HOME/code/grasp-pointnet/dex-net/apps
-    python kinect2grasp_python2.py
+    python kinect2grasp.py
 
     arguments:
     -h, --help                 show this help message and exit
@@ -240,3 +240,4 @@ If you found PointNetGPD useful in your research, please consider citing:
 - [pyntcloud](https://github.com/daavoo/pyntcloud)
 - [metu-ros-pkg](https://github.com/kadiru/metu-ros-pkg)
 - [mayavi](https://github.com/enthought/mayavi)
+

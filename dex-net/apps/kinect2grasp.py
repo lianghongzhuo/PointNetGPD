@@ -4,8 +4,7 @@
 # E-mail     : liang@informatik.uni-hamburg.de
 # Description:
 # Date       : 05/08/2018 6:04 PM
-# File Name  : kinect2grasp_python2.py
-# Note: only this file is written in Python2 for ROS
+# File Name  : kinect2grasp.py
 
 import torch
 import rospy
