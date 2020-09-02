@@ -110,8 +110,8 @@ You can download the dataset from: https://tams.informatik.uni-hamburg.de/resear
     python setup.py build_ext -i
     python setup.py develop
     ```
-    - If you use **ubuntu 18.04** and **conda environment**, you may encounter a compile error when install python-pcl, this is because conda has a higer version of vtk, here is a work around:
-        - `conda install vtk=8.2`
+    - If you use **ubuntu 18.04** and/or **conda environment**, you may encounter a compile error when install python-pcl, this is because conda has a higer version of vtk, here is a work around:
+        - `conda install vtk` or ``pip install vtk`
         - Use my fork: https://github.com/lianghongzhuo/python-pcl.git
 5. Generate sdf file for each nontextured.obj file using SDFGen by running:
     ```bash
