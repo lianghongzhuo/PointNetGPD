@@ -153,9 +153,9 @@ This code will check the norm calculated by meshpy and pcl library.
     ```
     ├── google2cloud.csv  (Transform from google_ycb model to ycb_rgbd model)
     ├── google2cloud.pkl  (Transform from google_ycb model to ycb_rgbd model)
-    ├── ycb_grasp -> $HOME/dataset/ycb_grasp  (Links to the dataset directory)
-    ├── ycb_meshes_google -> $HOME/dataset/ycb_meshes_google/objects  (Links to the dataset directory)
-    └── ycb_rgbd -> $HOME/dataset/ycb_rgbd  (Links to the dataset directory)
+    ├── ycb_grasp  (generated grasps)
+    ├── ycb_meshes_google  (YCB dataset)
+    └── ycb_rgbd  (YCB dataset)
     ```
 
     Generate point cloud from rgb-d image, you may change the number of process running in parallel if you use a shared host with others

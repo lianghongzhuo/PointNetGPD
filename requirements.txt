@@ -18,4 +18,5 @@ pyquaternion
 numba
 autolab-core
 autolab-perception
+shapely
 

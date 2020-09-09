@@ -9,7 +9,10 @@ import numpy as np
 import random
 import time
 import scipy.stats as stats
-import pcl
+try:
+    import pcl
+except ImportError as e:
+    print("[grasp_sampler] {}".format(e))
 import dexnet
 
 from dexnet.grasping import Grasp, Contact3D, ParallelJawPtGrasp3D, PointGraspMetrics3D  # , GraspableObject3D
