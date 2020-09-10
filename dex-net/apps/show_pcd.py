@@ -28,7 +28,7 @@ def show_obj(surface_points_, title, color='b'):
     mlab.title(title, size=0.5)
 
 
-path = os.environ['HOME'] + "/code/grasp-pointnet/pointGPD/data/ycb_rgbd/003_cracker_box/clouds"
+path = os.environ['HOME'] + "/code/PointNetGPD/PointNetGPD/data/ycb_rgbd/003_cracker_box/clouds"
 pcd_files = glob.glob(os.path.join(path, '*.pcd'))
 pcd_files.sort()
 for i in range(450, len(pcd_files)):

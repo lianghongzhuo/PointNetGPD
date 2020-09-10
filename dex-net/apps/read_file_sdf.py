@@ -53,7 +53,7 @@ if __name__ == '__main__':
     home_dir = os.environ['HOME']
     file_dir = home_dir + "/dataset/ycb_meshes_google/objects"  # for google ycb
     # file_dir = home_dir + "/dataset/ycb_meshes"  # for low quality ycb
-    path_sdfgen = home_dir + "/code/grasp-pointnet/SDFGen/bin/SDFGen"
+    path_sdfgen = home_dir + "/code/PointNetGPD/SDFGen/bin/SDFGen"
     file_list_all = get_file_name(file_dir)
     object_numbers = file_list_all.__len__()
 

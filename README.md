@@ -23,28 +23,27 @@ cd $HOME/code/
     ```bash
     cd $HOME/code
     git clone https://github.com/lianghongzhuo/PointNetGPD.git
-    mv PointNetGPD grasp-pointnet
     ```
 
 1. Install our requirements in `requirements.txt`
     ```bash
-    cd $HOME/code/grasp-pointnet
+    cd $HOME/code/PointNetGPD
     pip install -r requirements.txt
     ```
 1. Install our modified meshpy (Modify from [Berkeley Automation Lab: meshpy](https://github.com/BerkeleyAutomation/meshpy))
     ```bash
-    cd $HOME/code/grasp-pointnet/meshpy
+    cd $HOME/code/PointNetGPD/meshpy
     python setup.py develop
     ```
 
 1. Install our modified dex-net (Modify from [Berkeley Automation Lab: dex-net](https://github.com/BerkeleyAutomation/dex-net))
     ```bash
-    cd $HOME/code/grasp-pointnet/dex-net
+    cd $HOME/code/PointNetGPD/dex-net
     python setup.py develop
     ```
 1. Modify the gripper configurations to your own gripper
     ```bash
-    vim $HOME/code/grasp-pointnet/dex-net/data/grippers/robotiq_85/params.json
+    vim $HOME/code/PointNetGPD/dex-net/data/grippers/robotiq_85/params.json
     ```
     These parameters are used for dataset generation：
     ```bash
@@ -115,12 +114,12 @@ You can download the dataset from: https://tams.informatik.uni-hamburg.de/resear
         - Use my fork: https://github.com/lianghongzhuo/python-pcl.git
 5. Generate sdf file for each nontextured.obj file using SDFGen by running:
     ```bash
-    cd $HOME/code/grasp-pointnet/dex-net/apps
+    cd $HOME/code/PointNetGPD/dex-net/apps
     python read_file_sdf.py
     ```
 6. Generate dataset by running the code:
     ```bash
-    cd $HOME/code/grasp-pointnet/dex-net/apps
+    cd $HOME/code/PointNetGPD/dex-net/apps
     python generate-dataset-canny.py [prefix]
     ```
     where ```[prefix]``` is the optional, it will add a prefix on the generated files.
@@ -128,17 +127,15 @@ You can download the dataset from: https://tams.informatik.uni-hamburg.de/resear
 ## Visualization tools
 - Visualization grasps
     ```bash
-    cd $HOME/code/grasp-pointnet/dex-net/apps
-    python read_grasps_from_file.py [prefix]
+    cd $HOME/code/PointNetGPD/dex-net/apps
+    python read_grasps_from_file.py
     ```
     Note:
-    - ```prefix``` is optional, if added, the code will only show a specific object, else, the code will show all the objects in order.
-    - If you have error like this: ```ImportError: No module named shapely.geometry```, do ```pip install shapely``` should fix it.
-
+    - This file will visualize the grasps in `$HOME/code/PointNetGPD/PointNetGPD/data/ycb_grasp/` folder
 
 - Visualization object normals
     ```bash
-    cd $HOME/code/grasp-pointnet/dex-net/apps
+    cd $HOME/code/PointNetGPD/dex-net/apps
     python Cal_norm.py
     ```
 This code will check the norm calculated by meshpy and pcl library.
@@ -146,7 +143,7 @@ This code will check the norm calculated by meshpy and pcl library.
 ## Training the network
 1. Data prepare:
     ```bash
-    cd $HOME/code/grasp-pointnet/PointNetGPD/data
+    cd $HOME/code/PointNetGPD/PointNetGPD/data
     ```
 
     Make sure you have the following files, The links to the dataset directory should add by yourself:
@@ -198,14 +195,14 @@ This code will check the norm calculated by meshpy and pcl library.
 
     Goal of this step is to publish a ROS parameter tell the environment whether the UR5 robot is at home position or not.
     ```
-    cd $HOME/code/grasp-pointnet/dex-net/apps
+    cd $HOME/code/PointNetGPD/dex-net/apps
     python get_ur5_robot_state.py
     ```
 2. Run perception code:
     This code will take depth camera ROS info as input, and gives a set of good grasp candidates as output.
     All the input, output messages are using ROS messages.
     ```
-    cd $HOME/code/grasp-pointnet/dex-net/apps
+    cd $HOME/code/PointNetGPD/dex-net/apps
     python kinect2grasp.py
 
     arguments:

@@ -57,9 +57,9 @@ def worker(i, sample_nums, grasp_amount, good_grasp):
     object_name = file_list_all[i][len(home_dir) + 35:]
     print('a worker of task {} start'.format(object_name))
 
-    yaml_config = YamlConfig(home_dir + "/code/grasp-pointnet/dex-net/test/config.yaml")
+    yaml_config = YamlConfig(home_dir + "/code/PointNetGPD/dex-net/test/config.yaml")
     gripper_name = 'robotiq_85'
-    gripper = RobotGripper.load(gripper_name, home_dir + "/code/grasp-pointnet/dex-net/data/grippers")
+    gripper = RobotGripper.load(gripper_name, home_dir + "/code/PointNetGPD/dex-net/data/grippers")
     grasp_sample_method = "antipodal"
     if grasp_sample_method == "uniform":
         ags = UniformGraspSampler(gripper, yaml_config)
