@@ -5,6 +5,8 @@
 # Description: 
 # Date       : 30/05/2018 9:57 AM 
 # File Name  : read_grasps_from_file.py
+import logging
+logging.getLogger().setLevel(logging.FATAL)
 import os
 import sys
 import re

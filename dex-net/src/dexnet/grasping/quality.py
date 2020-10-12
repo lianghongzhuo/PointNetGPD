@@ -31,11 +31,13 @@ import numpy as np
 try:
     import pyhull.convex_hull as cvh
 except:
-    logging.warning('Failed to import pyhull')
+    pass
+    # logging.warning('Failed to import pyhull')
 try:
     import cvxopt as cvx
 except:
-    logging.warning('Failed to import cvx')
+    pass
+    # logging.warning('Failed to import cvx')
 import os
 import scipy.spatial as ss
 import sys
@@ -52,7 +54,8 @@ from mpl_toolkits.mplot3d import Axes3D
 try:
     import mayavi.mlab as mv
 except:
-    logging.warning('Failed to import mayavi')
+    pass
+    # logging.warning('Failed to import mayavi')
 import IPython
 
 # turn off output logging

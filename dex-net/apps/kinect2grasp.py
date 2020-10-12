@@ -42,7 +42,8 @@ except ImportError:
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath("__file__")))))
 sys.path.append(os.environ['HOME'] + "/code/PointNetGPD/PointNetGPD")
 from main_test import test_network, model, args
-
+import logging
+logging.getLogger().setLevel(logging.FATAL)
 # global config:
 yaml_config = YamlConfig(os.environ['HOME'] + "/code/PointNetGPD/dex-net/test/config.yaml")
 gripper_name = 'robotiq_85'

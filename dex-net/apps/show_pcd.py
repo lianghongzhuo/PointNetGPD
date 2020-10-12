@@ -5,13 +5,14 @@
 # Description: 
 # Date       : 21/08/2018 9:08 PM 
 # File Name  : show_pcd.py
-
 import numpy as np
 from mayavi import mlab
 import glob
 import os
 import pcl
 import pickle
+import logging
+logging.getLogger().setLevel(logging.FATAL)
 data_path = os.environ["HOME"] + "/code/PointNetGPD/PointNetGPD/data"
 
 def show_obj(points_, ply_name_,obj_transform, color="b"):

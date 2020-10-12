@@ -17,9 +17,12 @@ from meshpy.obj_file import ObjFile
 from meshpy.sdf_file import SdfFile
 import os
 import multiprocessing
-import matplotlib.pyplot as plt
-plt.switch_backend('agg')  # for the convenient of run on remote computer
-
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    pass
+import logging
+logging.getLogger().setLevel(logging.FATAL)
 
 def get_file_name(file_dir_):
     file_list = []

@@ -31,12 +31,13 @@ USE_OPENRAVE = True
 try:
     import openravepy as rave
 except:
-    logging.warning('Failed to import OpenRAVE')
+    # logging.warning('Failed to import OpenRAVE')
     USE_OPENRAVE = False
 try:
     import mayavi.mlab as mv
 except:
-    logging.warning('Failed to import mayavi')
+    pass
+    # logging.warning('Failed to import mayavi')
 
 import IPython
 

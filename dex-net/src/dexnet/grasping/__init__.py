@@ -35,10 +35,11 @@ from dexnet.grasping.grasp_quality_function import GraspQualityResult, GraspQual
 try:
     from dexnet.grasping.collision_checker import OpenRaveCollisionChecker, GraspCollisionChecker
 except Exception:
-    print('Unable to import OpenRaveCollisionChecker and GraspCollisionChecker! Likely due to missing '
-          'OpenRave dependency.')
-    print('Install OpenRave 0.9 from source if required. Instructions can be found at '
-          'http://openrave.org/docs/latest_stable/coreapihtml/installation_linux.html')
+    pass
+    # print('Unable to import OpenRaveCollisionChecker and GraspCollisionChecker! Likely due to missing '
+    #       'OpenRave dependency.')
+    # print('Install OpenRave 0.9 from source if required. Instructions can be found at '
+    #       'http://openrave.org/docs/latest_stable/coreapihtml/installation_linux.html')
 
 from dexnet.grasping.grasp_sampler import GraspSampler, UniformGraspSampler, GaussianGraspSampler, \
     AntipodalGraspSampler, GpgGraspSampler, PointGraspSampler, GpgGraspSamplerPcl

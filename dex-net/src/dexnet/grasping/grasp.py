@@ -38,7 +38,8 @@ from meshpy import Sdf3D, StablePose
 try:
     from gqcnn import Grasp2D
 except:
-    logging.warning('Failed to import gqcnn! Grasp2D functions will not be available.')
+    pass
+    # logging.warning('Failed to import gqcnn! Grasp2D functions will not be available.')
 
 from dexnet import abstractstatic
 from dexnet.grasping import Contact3D, GraspableObject3D

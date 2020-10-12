@@ -26,20 +26,19 @@ USE_OPENRAVE = True
 try:
     import openravepy as rave
 except ImportError:
-    logger.warning('Failed to import OpenRAVE')
+    # logger.warning('Failed to import OpenRAVE')
     USE_OPENRAVE = False
 
 try:
     import rospy
     import moveit_commander
 except ImportError:
-    logger.warning("Failed to import rospy, you can't grasp now.")
+    pass
 
 try:
     from mayavi import mlab
 except ImportError:
     mlab = []
-    logger.warning('Do not have mayavi installed, please set the vis to False')
 
 """
 Copyright ©2017. The Regents of the University of California (Regents). All Rights Reserved.
