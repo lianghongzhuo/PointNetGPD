@@ -64,6 +64,7 @@ cd $HOME/code/
     "real_hand_depth":
     "init_bite":
     ```
+![](data/gripper.svg)
 
 ## Genearted Grasp Dataset Download
 You can download the dataset from: https://tams.informatik.uni-hamburg.de/research/datasets/PointNetGPD_grasps_dataset.zip
