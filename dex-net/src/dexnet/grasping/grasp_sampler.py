@@ -32,8 +32,9 @@ except ImportError:
 try:
     import rospy
     import moveit_commander
+    ROS_ENABLED = True
 except ImportError:
-    pass
+    ROS_ENABLED = False
 
 try:
     from mayavi import mlab
@@ -1452,9 +1453,11 @@ class GpgGraspSamplerPcl(GraspSampler):
             # end of modification 5
 
             # for ros, we neded to judge if the robot is at HOME
-
-            if rospy.get_param("/robot_at_home") == "false":
-                robot_at_home = False
+            if ROS_ENABLED:
+                if rospy.get_param("/robot_at_home") == "false":
+                    robot_at_home = False
+                else:
+                    robot_at_home = True
             else:
                 robot_at_home = True
             if not robot_at_home:
