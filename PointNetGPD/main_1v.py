@@ -26,7 +26,7 @@ parser.add_argument('--lr', type=float, default=0.005)
 parser.add_argument('--load-model', type=str, default='')
 parser.add_argument('--load-epoch', type=int, default=-1)
 parser.add_argument('--model-path', type=str, default='./assets/learned_models',
-                   help='pre-trained model path')
+                    help='pre-trained model path')
 parser.add_argument('--data-path', type=str, default='./data', help='data path')
 parser.add_argument('--log-interval', type=int, default=10)
 parser.add_argument('--save-interval', type=int, default=1)
@@ -41,75 +41,25 @@ if args.cuda:
 logger = SummaryWriter(os.path.join('./assets/log/', args.tag))
 np.random.seed(int(time.time()))
 
+
 def worker_init_fn(pid):
-    np.random.seed(torch.initial_seed() % (2**31-1))
+    np.random.seed(torch.initial_seed() % (2 ** 31 - 1))
+
 
 def my_collate(batch):
-    batch = list(filter(lambda x:x is not None, batch))
+    batch = list(filter(lambda x: x is not None, batch))
     return torch.utils.data.dataloader.default_collate(batch)
 
-grasp_points_num=750
-thresh_good=0.6
-thresh_bad=0.6
-point_channel=3
 
-train_loader = torch.utils.data.DataLoader(
-    PointGraspOneViewDataset(
-        grasp_points_num=grasp_points_num,
-        path=args.data_path,
-        tag='train',
-        grasp_amount_per_file=6500,
-        thresh_good=thresh_good,
-        thresh_bad=thresh_bad,
-    ),
-    batch_size=args.batch_size,
-    num_workers=32,
-    pin_memory=True,
-    shuffle=True,
-    worker_init_fn=worker_init_fn,
-    collate_fn=my_collate,
-)
+grasp_points_num = 750
+thresh_good = 0.6
+thresh_bad = 0.6
+point_channel = 3
 
-test_loader = torch.utils.data.DataLoader(
-    PointGraspOneViewDataset(
-        grasp_points_num=grasp_points_num,
-        path=args.data_path,
-        tag='test',
-        grasp_amount_per_file=500,
-        thresh_good=thresh_good,
-        thresh_bad=thresh_bad,
-        with_obj=True,
-    ),
-    batch_size=args.batch_size,
-    num_workers=32,
-    pin_memory=True,
-    shuffle=True,
-    worker_init_fn=worker_init_fn,
-    collate_fn=my_collate,
-)
-
-is_resume = 0
-if args.load_model and args.load_epoch != -1:
-    is_resume = 1
-
-if is_resume or args.mode == 'test':
-    model = torch.load(args.load_model, map_location='cuda:{}'.format(args.gpu))
-    model.device_ids = [args.gpu]
-    print('load model {}'.format(args.load_model))
-else:
-    model = PointNetCls(num_points=grasp_points_num, input_chann=point_channel, k=2)
-if args.cuda:
-    if args.gpu != -1:
-        torch.cuda.set_device(args.gpu)
-        model = model.cuda()
-    else:
-        device_id = [0,1,2,3]
-        torch.cuda.set_device(device_id[0])
-        model = nn.DataParallel(model, device_ids=device_id).cuda()
-optimizer = optim.Adam(model.parameters(), lr=args.lr)
-scheduler = StepLR(optimizer, step_size=30, gamma=0.5)
 
 def train(model, loader, epoch):
+    optimizer = optim.Adam(model.parameters(), lr=args.lr)
+    scheduler = StepLR(optimizer, step_size=30, gamma=0.5)
     scheduler.step()
     model.train()
     torch.set_grad_enabled(True)
@@ -128,12 +78,11 @@ def train(model, loader, epoch):
         pred = output.data.max(1, keepdim=True)[1]
         correct += pred.eq(target.view_as(pred)).long().cpu().sum()
         if batch_idx % args.log_interval == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}\t{}'.format(
-            epoch, batch_idx * args.batch_size, len(loader.dataset),
-            100. * batch_idx * args.batch_size / len(loader.dataset), loss.item(), args.tag))
-            logger.add_scalar('train_loss', loss.cpu().item(),
-                    batch_idx + epoch * len(loader))
-    return float(correct)/float(dataset_size)
+            percentage = 100. * batch_idx * args.batch_size / len(loader.dataset)
+            print(f'Train Epoch: {epoch} [{batch_idx * args.batch_size}/{len(loader.dataset)} ({percentage}%)]'
+                  f'\tLoss: {loss.item()}\t{args.tag}')
+            logger.add_scalar('train_loss', loss.cpu().item(), batch_idx + epoch * len(loader))
+    return float(correct) / float(dataset_size)
 
 
 def test(model, loader):
@@ -150,7 +99,7 @@ def test(model, loader):
         data, target = data.float(), target.long().squeeze()
         if args.cuda:
             data, target = data.cuda(), target.cuda()
-        output, _ = model(data) # N*C
+        output, _ = model(data)  # N*C
         test_loss += F.nll_loss(output, target, size_average=False).cpu().item()
         pred = output.data.max(1, keepdim=True)[1]
         correct += pred.eq(target.view_as(pred)).long().cpu().sum()
@@ -158,13 +107,68 @@ def test(model, loader):
             res.append((i, j[0], k))
 
     test_loss /= len(loader.dataset)
-    acc = float(correct)/float(dataset_size)
+    acc = float(correct) / float(dataset_size)
     return acc, test_loss
 
 
 def main():
+
+    train_loader = torch.utils.data.DataLoader(
+        PointGraspOneViewDataset(
+            grasp_points_num=grasp_points_num,
+            path=args.data_path,
+            tag='train',
+            grasp_amount_per_file=6500,
+            thresh_good=thresh_good,
+            thresh_bad=thresh_bad,
+        ),
+        batch_size=args.batch_size,
+        num_workers=32,
+        pin_memory=True,
+        shuffle=True,
+        worker_init_fn=worker_init_fn,
+        collate_fn=my_collate,
+    )
+
+    test_loader = torch.utils.data.DataLoader(
+        PointGraspOneViewDataset(
+            grasp_points_num=grasp_points_num,
+            path=args.data_path,
+            tag='test',
+            grasp_amount_per_file=500,
+            thresh_good=thresh_good,
+            thresh_bad=thresh_bad,
+            with_obj=True,
+        ),
+        batch_size=args.batch_size,
+        num_workers=32,
+        pin_memory=True,
+        shuffle=True,
+        worker_init_fn=worker_init_fn,
+        collate_fn=my_collate,
+    )
+
+    is_resume = 0
+    if args.load_model and args.load_epoch != -1:
+        is_resume = 1
+
+    if is_resume or args.mode == 'test':
+        model = torch.load(args.load_model, map_location='cuda:{}'.format(args.gpu))
+        model.device_ids = [args.gpu]
+        print('load model {}'.format(args.load_model))
+    else:
+        model = PointNetCls(num_points=grasp_points_num, input_chann=point_channel, k=2)
+    if args.cuda:
+        if args.gpu != -1:
+            torch.cuda.set_device(args.gpu)
+            model = model.cuda()
+        else:
+            device_id = [0, 1, 2, 3]
+            torch.cuda.set_device(device_id[0])
+            model = nn.DataParallel(model, device_ids=device_id).cuda()
+
     if args.mode == 'train':
-        for epoch in range(is_resume*args.load_epoch, args.epoch):
+        for epoch in range(is_resume * args.load_epoch, args.epoch):
             acc_train = train(model, train_loader, epoch)
             print('Train done, acc={}'.format(acc_train))
             acc, loss = test(model, test_loader)
@@ -180,6 +184,7 @@ def main():
         print('testing...')
         acc, loss = test(model, test_loader)
         print('Test done, acc={}, loss={}'.format(acc, loss))
+
 
 if __name__ == "__main__":
     main()

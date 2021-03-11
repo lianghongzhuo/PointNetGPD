@@ -1,8 +1,6 @@
 import os
 import glob
 import pickle
-
-import pcl
 import torch
 import torch.utils.data
 import torch.nn as nn
@@ -32,7 +30,7 @@ class PointGraspDataset(torch.utils.data.Dataset):
         if self.project_size != 60:
             raise NotImplementedError
         self.normal_K = 10
-        self.voxel_point_num  = 50
+        self.voxel_point_num = 50
         self.projection_margin = 1
 
         self.transform = pickle.load(open(os.path.join(self.path, 'google2cloud.pkl'), 'rb'))
@@ -57,16 +55,16 @@ class PointGraspDataset(torch.utils.data.Dataset):
 
     def collect_pc(self, grasp, pc, transform):
         center = grasp[0:3]
-        axis = grasp[3:6] # binormal
+        axis = grasp[3:6]  # binormal
         width = grasp[6]
         angle = grasp[7]
 
-        axis = axis/np.linalg.norm(axis)
+        axis = axis / np.linalg.norm(axis)
         binormal = axis
         # cal approach
         cos_t = np.cos(angle)
         sin_t = np.sin(angle)
-        R1 = np.c_[[cos_t, 0, sin_t],[0, 1, 0],[-sin_t, 0, cos_t]]
+        R1 = np.c_[[cos_t, 0, sin_t], [0, 1, 0], [-sin_t, 0, cos_t]]
         axis_y = axis
         axis_x = np.array([axis_y[1], -axis_y[0], 0])
         if np.linalg.norm(axis_x) == 0:
@@ -79,8 +77,8 @@ class PointGraspDataset(torch.utils.data.Dataset):
         approach = approach / np.linalg.norm(approach)
         minor_normal = np.cross(axis, approach)
 
-        left = center - width*axis/2
-        right = center + width*axis/2
+        left = center - width * axis / 2
+        right = center + width * axis / 2
         # bottom = center - width*approach
         left = (np.dot(transform, np.array([left[0], left[1], left[2], 1])))[:3]
         right = (np.dot(transform, np.array([right[0], right[1], right[2], 1])))[:3]
@@ -88,17 +86,18 @@ class PointGraspDataset(torch.utils.data.Dataset):
         center = (np.dot(transform, np.array([center[0], center[1], center[2], 1])))[:3]
         binormal = (np.dot(transform, np.array([binormal[0], binormal[1], binormal[2], 0])))[:3].reshape(3, 1)
         approach = (np.dot(transform, np.array([approach[0], approach[1], approach[2], 0])))[:3].reshape(3, 1)
-        minor_normal = (np.dot(transform, np.array([minor_normal[0], minor_normal[1], minor_normal[2], 0])))[:3].reshape(3, 1)
+        minor_normal = (np.dot(transform, np.array([minor_normal[0], minor_normal[1], minor_normal[2], 0])))[
+                       :3].reshape(3, 1)
         matrix = np.hstack([approach, binormal, minor_normal]).T
         # pc_t/left_t/right_t is in local coordinate(with center as origin)
         # other(include pc) are in pc coordinate
-        pc_t = (np.dot(matrix, (pc-center).T)).T
-        left_t = (-width * np.array([0,1,0]) / 2).squeeze()
-        right_t = (width * np.array([0,1,0]) / 2).squeeze()
+        pc_t = (np.dot(matrix, (pc - center).T)).T
+        left_t = (-width * np.array([0, 1, 0]) / 2).squeeze()
+        right_t = (width * np.array([0, 1, 0]) / 2).squeeze()
 
-        x_limit = width/4
-        z_limit = width/4
-        y_limit = width/2
+        x_limit = width / 4
+        z_limit = width / 4
+        y_limit = width / 2
 
         x1 = pc_t[:, 0] > -x_limit
         x2 = pc_t[:, 0] < x_limit
@@ -119,7 +118,7 @@ class PointGraspDataset(torch.utils.data.Dataset):
 
     def check_square(self, point, points_g):
         dirs = np.array([[-1, 1, 1], [1, 1, 1], [-1, -1, 1], [1, -1, 1],
-                        [-1, 1, -1], [1, 1, -1], [-1, -1, -1], [1, -1, -1]])
+                         [-1, 1, -1], [1, 1, -1], [-1, -1, -1], [1, -1, -1]])
         p = dirs * 0.5 + point  # here res * 0.5 means get half of a pixel width
         a1 = p[2][1] < points_g[:, 1]
         a2 = p[0][1] > points_g[:, 1]
@@ -154,7 +153,7 @@ class PointGraspDataset(torch.utils.data.Dataset):
                   "such data, please throw it away.  -- Hongzhuo")
             return occupy_pic, norm_pic
         # Here, we use the gripper width to cal the res:
-        res = gripper_width / (m_width_of_pic-margin)
+        res = gripper_width / (m_width_of_pic - margin)
 
         voxel_points_square_norm = []
         x_coord_r = ((point_cloud_voxel[:, order[0]]) / res + m_width_of_pic / 2)
@@ -181,7 +180,7 @@ class PointGraspDataset(torch.utils.data.Dataset):
                 feature_buffer[index, number, 3:6] = normal
                 number_buffer[index] += 1
 
-        voxel_points_square_norm = np.sum(feature_buffer[..., -3:], axis=1)/number_buffer[:, np.newaxis]
+        voxel_points_square_norm = np.sum(feature_buffer[..., -3:], axis=1) / number_buffer[:, np.newaxis]
         voxel_points_square = coordinate_buffer
 
         if len(voxel_points_square) == 0:
@@ -191,7 +190,7 @@ class PointGraspDataset(torch.utils.data.Dataset):
         norm_pic[x_coord_square, y_coord_square, :] = voxel_points_square_norm
         occupy_pic[x_coord_square, y_coord_square] = number_buffer[:, np.newaxis]
         occupy_max = occupy_pic.max()
-        assert(occupy_max > 0)
+        assert (occupy_max > 0)
         occupy_pic = occupy_pic / occupy_max
         return occupy_pic, norm_pic
 
@@ -210,11 +209,11 @@ class PointGraspDataset(torch.utils.data.Dataset):
         grasp_pc = pc[self.in_ind]
         grasp_pc_norm = surface_normal[self.in_ind]
         bad_check = (grasp_pc_norm != grasp_pc_norm)
-        if np.sum(bad_check)!=0:
+        if np.sum(bad_check) != 0:
             bad_ind = np.where(bad_check == True)
             grasp_pc = np.delete(grasp_pc, bad_ind[0], axis=0)
             grasp_pc_norm = np.delete(grasp_pc_norm, bad_ind[0], axis=0)
-        assert(np.sum(grasp_pc_norm != grasp_pc_norm) == 0)
+        assert (np.sum(grasp_pc_norm != grasp_pc_norm) == 0)
         m_width_of_pic = self.project_size
         margin = self.projection_margin
         order = np.array([0, 1, 2])
@@ -228,7 +227,7 @@ class PointGraspDataset(torch.utils.data.Dataset):
                                                          order, gripper_width)
             order = np.array([0, 2, 1])
             occupy_pic3, norm_pic3 = self.cal_projection(grasp_pc, m_width_of_pic, margin, grasp_pc_norm,
-                                                     order, gripper_width)
+                                                         order, gripper_width)
             output = np.dstack([occupy_pic1, norm_pic1, occupy_pic2, norm_pic2, occupy_pic3, norm_pic3])
         else:
             raise NotImplementedError
@@ -263,7 +262,7 @@ class PointGraspDataset(torch.utils.data.Dataset):
                                                      replace=True)].T
         else:
             grasp_pc = grasp_pc.transpose((2, 1, 0))
-        score = level_score + refine_score*0.01
+        score = level_score + refine_score * 0.01
         if score >= self.thresh_bad:
             label = 0
         elif score <= self.thresh_good:
@@ -303,7 +302,7 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
         if self.project_size != 60:
             raise NotImplementedError
         self.normal_K = 10
-        self.voxel_point_num  = 50
+        self.voxel_point_num = 50
         self.projection_margin = 1
 
         self.transform = pickle.load(open(os.path.join(self.path, 'google2cloud.pkl'), 'rb'))
@@ -328,16 +327,16 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
 
     def collect_pc(self, grasp, pc, transform):
         center = grasp[0:3]
-        axis = grasp[3:6] # binormal
+        axis = grasp[3:6]  # binormal
         width = grasp[6]
         angle = grasp[7]
 
-        axis = axis/np.linalg.norm(axis)
+        axis = axis / np.linalg.norm(axis)
         binormal = axis
         # cal approach
         cos_t = np.cos(angle)
         sin_t = np.sin(angle)
-        R1 = np.c_[[cos_t, 0, sin_t],[0, 1, 0],[-sin_t, 0, cos_t]]
+        R1 = np.c_[[cos_t, 0, sin_t], [0, 1, 0], [-sin_t, 0, cos_t]]
         axis_y = axis
         axis_x = np.array([axis_y[1], -axis_y[0], 0])
         if np.linalg.norm(axis_x) == 0:
@@ -350,8 +349,8 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
         approach = approach / np.linalg.norm(approach)
         minor_normal = np.cross(axis, approach)
 
-        left = center - width*axis/2
-        right = center + width*axis/2
+        left = center - width * axis / 2
+        right = center + width * axis / 2
         # bottom = center - width*approach
         left = (np.dot(transform, np.array([left[0], left[1], left[2], 1])))[:3]
         right = (np.dot(transform, np.array([right[0], right[1], right[2], 1])))[:3]
@@ -359,17 +358,18 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
         center = (np.dot(transform, np.array([center[0], center[1], center[2], 1])))[:3]
         binormal = (np.dot(transform, np.array([binormal[0], binormal[1], binormal[2], 0])))[:3].reshape(3, 1)
         approach = (np.dot(transform, np.array([approach[0], approach[1], approach[2], 0])))[:3].reshape(3, 1)
-        minor_normal = (np.dot(transform, np.array([minor_normal[0], minor_normal[1], minor_normal[2], 0])))[:3].reshape(3, 1)
+        minor_normal = (np.dot(transform, np.array([minor_normal[0], minor_normal[1], minor_normal[2], 0])))[
+                       :3].reshape(3, 1)
         matrix = np.hstack([approach, binormal, minor_normal]).T
         # pc_t/left_t/right_t is in local coordinate(with center as origin)
         # other(include pc) are in pc coordinate
-        pc_t = (np.dot(matrix, (pc-center).T)).T
-        left_t = (-width * np.array([0,1,0]) / 2).squeeze()
-        right_t = (width * np.array([0,1,0]) / 2).squeeze()
+        pc_t = (np.dot(matrix, (pc - center).T)).T
+        left_t = (-width * np.array([0, 1, 0]) / 2).squeeze()
+        right_t = (width * np.array([0, 1, 0]) / 2).squeeze()
 
-        x_limit = width/4
-        z_limit = width/4
-        y_limit = width/2
+        x_limit = width / 4
+        z_limit = width / 4
+        y_limit = width / 2
 
         x1 = pc_t[:, 0] > -x_limit
         x2 = pc_t[:, 0] < x_limit
@@ -390,7 +390,7 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
 
     def check_square(self, point, points_g):
         dirs = np.array([[-1, 1, 1], [1, 1, 1], [-1, -1, 1], [1, -1, 1],
-                        [-1, 1, -1], [1, 1, -1], [-1, -1, -1], [1, -1, -1]])
+                         [-1, 1, -1], [1, 1, -1], [-1, -1, -1], [1, -1, -1]])
         p = dirs * 0.5 + point  # here res * 0.5 means get half of a pixel width
         a1 = p[2][1] < points_g[:, 1]
         a2 = p[0][1] > points_g[:, 1]
@@ -425,7 +425,7 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
                   "such data, please throw it away.  -- Hongzhuo")
             return occupy_pic, norm_pic
         # Here, we use the gripper width to cal the res:
-        res = gripper_width / (m_width_of_pic-margin)
+        res = gripper_width / (m_width_of_pic - margin)
 
         voxel_points_square_norm = []
         x_coord_r = ((point_cloud_voxel[:, order[0]]) / res + m_width_of_pic / 2)
@@ -452,7 +452,7 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
                 feature_buffer[index, number, 3:6] = normal
                 number_buffer[index] += 1
 
-        voxel_points_square_norm = np.sum(feature_buffer[..., -3:], axis=1)/number_buffer[:, np.newaxis]
+        voxel_points_square_norm = np.sum(feature_buffer[..., -3:], axis=1) / number_buffer[:, np.newaxis]
         voxel_points_square = coordinate_buffer
 
         if len(voxel_points_square) == 0:
@@ -462,7 +462,7 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
         norm_pic[x_coord_square, y_coord_square, :] = voxel_points_square_norm
         occupy_pic[x_coord_square, y_coord_square] = number_buffer[:, np.newaxis]
         occupy_max = occupy_pic.max()
-        assert(occupy_max > 0)
+        assert (occupy_max > 0)
         occupy_pic = occupy_pic / occupy_max
         return occupy_pic, norm_pic
 
@@ -481,11 +481,11 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
         grasp_pc = pc[self.in_ind]
         grasp_pc_norm = surface_normal[self.in_ind]
         bad_check = (grasp_pc_norm != grasp_pc_norm)
-        if np.sum(bad_check)!=0:
+        if np.sum(bad_check) != 0:
             bad_ind = np.where(bad_check == True)
             grasp_pc = np.delete(grasp_pc, bad_ind[0], axis=0)
             grasp_pc_norm = np.delete(grasp_pc_norm, bad_ind[0], axis=0)
-        assert(np.sum(grasp_pc_norm != grasp_pc_norm) == 0)
+        assert (np.sum(grasp_pc_norm != grasp_pc_norm) == 0)
         m_width_of_pic = self.project_size
         margin = self.projection_margin
         order = np.array([0, 1, 2])
@@ -499,7 +499,7 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
                                                          order, gripper_width)
             order = np.array([0, 2, 1])
             occupy_pic3, norm_pic3 = self.cal_projection(grasp_pc, m_width_of_pic, margin, grasp_pc_norm,
-                                                     order, gripper_width)
+                                                         order, gripper_width)
             output = np.dstack([occupy_pic1, norm_pic1, occupy_pic2, norm_pic2, occupy_pic3, norm_pic3])
         else:
             raise NotImplementedError
@@ -534,7 +534,7 @@ class PointGraspMultiClassDataset(torch.utils.data.Dataset):
                                                      replace=True)].T
         else:
             grasp_pc = grasp_pc.transpose((2, 1, 0))
-        score = level_score + refine_score*0.01
+        score = level_score + refine_score * 0.01
         if score >= self.thresh_bad:
             label = 0
         elif score <= self.thresh_good:
@@ -572,7 +572,7 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
         if self.project_size != 60:
             raise NotImplementedError
         self.normal_K = 10
-        self.voxel_point_num  = 50
+        self.voxel_point_num = 50
         self.projection_margin = 1
         self.minimum_point_amount = 150
 
@@ -600,16 +600,16 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
 
     def collect_pc(self, grasp, pc, transform):
         center = grasp[0:3]
-        axis = grasp[3:6] # binormal
+        axis = grasp[3:6]  # binormal
         width = grasp[6]
         angle = grasp[7]
 
-        axis = axis/np.linalg.norm(axis)
+        axis = axis / np.linalg.norm(axis)
         binormal = axis
         # cal approach
         cos_t = np.cos(angle)
         sin_t = np.sin(angle)
-        R1 = np.c_[[cos_t, 0, sin_t],[0, 1, 0],[-sin_t, 0, cos_t]]
+        R1 = np.c_[[cos_t, 0, sin_t], [0, 1, 0], [-sin_t, 0, cos_t]]
         axis_y = axis
         axis_x = np.array([axis_y[1], -axis_y[0], 0])
         if np.linalg.norm(axis_x) == 0:
@@ -622,8 +622,8 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
         approach = approach / np.linalg.norm(approach)
         minor_normal = np.cross(axis, approach)
 
-        left = center - width*axis/2
-        right = center + width*axis/2
+        left = center - width * axis / 2
+        right = center + width * axis / 2
         # bottom = center - width*approach
         left = (np.dot(transform, np.array([left[0], left[1], left[2], 1])))[:3]
         right = (np.dot(transform, np.array([right[0], right[1], right[2], 1])))[:3]
@@ -631,17 +631,18 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
         center = (np.dot(transform, np.array([center[0], center[1], center[2], 1])))[:3]
         binormal = (np.dot(transform, np.array([binormal[0], binormal[1], binormal[2], 0])))[:3].reshape(3, 1)
         approach = (np.dot(transform, np.array([approach[0], approach[1], approach[2], 0])))[:3].reshape(3, 1)
-        minor_normal = (np.dot(transform, np.array([minor_normal[0], minor_normal[1], minor_normal[2], 0])))[:3].reshape(3, 1)
+        minor_normal = (np.dot(transform, np.array([minor_normal[0], minor_normal[1], minor_normal[2], 0])))[
+                       :3].reshape(3, 1)
         matrix = np.hstack([approach, binormal, minor_normal]).T
         # pc_t/left_t/right_t is in local coordinate(with center as origin)
         # other(include pc) are in pc coordinate
-        pc_t = (np.dot(matrix, (pc-center).T)).T
-        left_t = (-width * np.array([0,1,0]) / 2).squeeze()
-        right_t = (width * np.array([0,1,0]) / 2).squeeze()
+        pc_t = (np.dot(matrix, (pc - center).T)).T
+        left_t = (-width * np.array([0, 1, 0]) / 2).squeeze()
+        right_t = (width * np.array([0, 1, 0]) / 2).squeeze()
 
-        x_limit = width/4
-        z_limit = width/4
-        y_limit = width/2
+        x_limit = width / 4
+        z_limit = width / 4
+        y_limit = width / 2
 
         x1 = pc_t[:, 0] > -x_limit
         x2 = pc_t[:, 0] < x_limit
@@ -662,7 +663,7 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
 
     def check_square(self, point, points_g):
         dirs = np.array([[-1, 1, 1], [1, 1, 1], [-1, -1, 1], [1, -1, 1],
-                        [-1, 1, -1], [1, 1, -1], [-1, -1, -1], [1, -1, -1]])
+                         [-1, 1, -1], [1, 1, -1], [-1, -1, -1], [1, -1, -1]])
         p = dirs * 0.5 + point  # here res * 0.5 means get half of a pixel width
         a1 = p[2][1] < points_g[:, 1]
         a2 = p[0][1] > points_g[:, 1]
@@ -697,7 +698,7 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
                   "such data, please throw it away.  -- Hongzhuo")
             return occupy_pic, norm_pic
         # Here, we use the gripper width to cal the res:
-        res = gripper_width / (m_width_of_pic-margin)
+        res = gripper_width / (m_width_of_pic - margin)
 
         voxel_points_square_norm = []
         x_coord_r = ((point_cloud_voxel[:, order[0]]) / res + m_width_of_pic / 2)
@@ -724,7 +725,7 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
                 feature_buffer[index, number, 3:6] = normal
                 number_buffer[index] += 1
 
-        voxel_points_square_norm = np.sum(feature_buffer[..., -3:], axis=1)/number_buffer[:, np.newaxis]
+        voxel_points_square_norm = np.sum(feature_buffer[..., -3:], axis=1) / number_buffer[:, np.newaxis]
         voxel_points_square = coordinate_buffer
 
         if len(voxel_points_square) == 0:
@@ -734,7 +735,7 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
         norm_pic[x_coord_square, y_coord_square, :] = voxel_points_square_norm
         occupy_pic[x_coord_square, y_coord_square] = number_buffer[:, np.newaxis]
         occupy_max = occupy_pic.max()
-        assert(occupy_max > 0)
+        assert (occupy_max > 0)
         occupy_pic = occupy_pic / occupy_max
         return occupy_pic, norm_pic
 
@@ -753,11 +754,11 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
         grasp_pc = pc[self.in_ind]
         grasp_pc_norm = surface_normal[self.in_ind]
         bad_check = (grasp_pc_norm != grasp_pc_norm)
-        if np.sum(bad_check)!=0:
+        if np.sum(bad_check) != 0:
             bad_ind = np.where(bad_check == True)
             grasp_pc = np.delete(grasp_pc, bad_ind[0], axis=0)
             grasp_pc_norm = np.delete(grasp_pc_norm, bad_ind[0], axis=0)
-        assert(np.sum(grasp_pc_norm != grasp_pc_norm) == 0)
+        assert (np.sum(grasp_pc_norm != grasp_pc_norm) == 0)
         m_width_of_pic = self.project_size
         margin = self.projection_margin
         order = np.array([0, 1, 2])
@@ -771,7 +772,7 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
                                                          order, gripper_width)
             order = np.array([0, 2, 1])
             occupy_pic3, norm_pic3 = self.cal_projection(grasp_pc, m_width_of_pic, margin, grasp_pc_norm,
-                                                     order, gripper_width)
+                                                         order, gripper_width)
             output = np.dstack([occupy_pic1, norm_pic1, occupy_pic2, norm_pic2, occupy_pic3, norm_pic3])
         else:
             raise NotImplementedError
@@ -806,7 +807,7 @@ class PointGraspOneViewDataset(torch.utils.data.Dataset):
                                                      replace=True)].T
         else:
             grasp_pc = grasp_pc.transpose((2, 1, 0))
-        score = level_score + refine_score*0.01
+        score = level_score + refine_score * 0.01
         if score >= self.thresh_bad:
             label = 0
         elif score <= self.thresh_good:
@@ -844,7 +845,7 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
         if self.project_size != 60:
             raise NotImplementedError
         self.normal_K = 10
-        self.voxel_point_num  = 50
+        self.voxel_point_num = 50
         self.projection_margin = 1
         self.minimum_point_amount = 150
 
@@ -872,16 +873,16 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
 
     def collect_pc(self, grasp, pc, transform):
         center = grasp[0:3]
-        axis = grasp[3:6] # binormal
+        axis = grasp[3:6]  # binormal
         width = grasp[6]
         angle = grasp[7]
 
-        axis = axis/np.linalg.norm(axis)
+        axis = axis / np.linalg.norm(axis)
         binormal = axis
         # cal approach
         cos_t = np.cos(angle)
         sin_t = np.sin(angle)
-        R1 = np.c_[[cos_t, 0, sin_t],[0, 1, 0],[-sin_t, 0, cos_t]]
+        R1 = np.c_[[cos_t, 0, sin_t], [0, 1, 0], [-sin_t, 0, cos_t]]
         axis_y = axis
         axis_x = np.array([axis_y[1], -axis_y[0], 0])
         if np.linalg.norm(axis_x) == 0:
@@ -894,22 +895,23 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
         approach = approach / np.linalg.norm(approach)
         minor_normal = np.cross(axis, approach)
 
-        left = center - width*axis/2
-        right = center + width*axis/2
+        left = center - width * axis / 2
+        right = center + width * axis / 2
         left = (np.dot(transform, np.array([left[0], left[1], left[2], 1])))[:3]
         right = (np.dot(transform, np.array([right[0], right[1], right[2], 1])))[:3]
         center = (np.dot(transform, np.array([center[0], center[1], center[2], 1])))[:3]
         binormal = (np.dot(transform, np.array([binormal[0], binormal[1], binormal[2], 0])))[:3].reshape(3, 1)
         approach = (np.dot(transform, np.array([approach[0], approach[1], approach[2], 0])))[:3].reshape(3, 1)
-        minor_normal = (np.dot(transform, np.array([minor_normal[0], minor_normal[1], minor_normal[2], 0])))[:3].reshape(3, 1)
+        minor_normal = (np.dot(transform, np.array([minor_normal[0], minor_normal[1], minor_normal[2], 0])))[
+                       :3].reshape(3, 1)
         matrix = np.hstack([approach, binormal, minor_normal]).T
-        pc_t = (np.dot(matrix, (pc-center).T)).T
-        left_t = (-width * np.array([0,1,0]) / 2).squeeze()
-        right_t = (width * np.array([0,1,0]) / 2).squeeze()
+        pc_t = (np.dot(matrix, (pc - center).T)).T
+        left_t = (-width * np.array([0, 1, 0]) / 2).squeeze()
+        right_t = (width * np.array([0, 1, 0]) / 2).squeeze()
 
-        x_limit = width/4
-        z_limit = width/4
-        y_limit = width/2
+        x_limit = width / 4
+        z_limit = width / 4
+        y_limit = width / 2
 
         x1 = pc_t[:, 0] > -x_limit
         x2 = pc_t[:, 0] < x_limit
@@ -930,7 +932,7 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
 
     def check_square(self, point, points_g):
         dirs = np.array([[-1, 1, 1], [1, 1, 1], [-1, -1, 1], [1, -1, 1],
-                        [-1, 1, -1], [1, 1, -1], [-1, -1, -1], [1, -1, -1]])
+                         [-1, 1, -1], [1, 1, -1], [-1, -1, -1], [1, -1, -1]])
         p = dirs * 0.5 + point  # here res * 0.5 means get half of a pixel width
         a1 = p[2][1] < points_g[:, 1]
         a2 = p[0][1] > points_g[:, 1]
@@ -965,7 +967,7 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
                   "such data, please throw it away.  -- Hongzhuo")
             return occupy_pic, norm_pic
         # Here, we use the gripper width to cal the res:
-        res = gripper_width / (m_width_of_pic-margin)
+        res = gripper_width / (m_width_of_pic - margin)
 
         voxel_points_square_norm = []
         x_coord_r = ((point_cloud_voxel[:, order[0]]) / res + m_width_of_pic / 2)
@@ -992,7 +994,7 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
                 feature_buffer[index, number, 3:6] = normal
                 number_buffer[index] += 1
 
-        voxel_points_square_norm = np.sum(feature_buffer[..., -3:], axis=1)/number_buffer[:, np.newaxis]
+        voxel_points_square_norm = np.sum(feature_buffer[..., -3:], axis=1) / number_buffer[:, np.newaxis]
         voxel_points_square = coordinate_buffer
 
         if len(voxel_points_square) == 0:
@@ -1002,7 +1004,7 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
         norm_pic[x_coord_square, y_coord_square, :] = voxel_points_square_norm
         occupy_pic[x_coord_square, y_coord_square] = number_buffer[:, np.newaxis]
         occupy_max = occupy_pic.max()
-        assert(occupy_max > 0)
+        assert (occupy_max > 0)
         occupy_pic = occupy_pic / occupy_max
         return occupy_pic, norm_pic
 
@@ -1021,11 +1023,11 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
         grasp_pc = pc[self.in_ind]
         grasp_pc_norm = surface_normal[self.in_ind]
         bad_check = (grasp_pc_norm != grasp_pc_norm)
-        if np.sum(bad_check)!=0:
+        if np.sum(bad_check) != 0:
             bad_ind = np.where(bad_check == True)
             grasp_pc = np.delete(grasp_pc, bad_ind[0], axis=0)
             grasp_pc_norm = np.delete(grasp_pc_norm, bad_ind[0], axis=0)
-        assert(np.sum(grasp_pc_norm != grasp_pc_norm) == 0)
+        assert (np.sum(grasp_pc_norm != grasp_pc_norm) == 0)
         m_width_of_pic = self.project_size
         margin = self.projection_margin
         order = np.array([0, 1, 2])
@@ -1039,7 +1041,7 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
                                                          order, gripper_width)
             order = np.array([0, 2, 1])
             occupy_pic3, norm_pic3 = self.cal_projection(grasp_pc, m_width_of_pic, margin, grasp_pc_norm,
-                                                     order, gripper_width)
+                                                         order, gripper_width)
             output = np.dstack([occupy_pic1, norm_pic1, occupy_pic2, norm_pic2, occupy_pic3, norm_pic3])
         else:
             raise NotImplementedError
@@ -1074,7 +1076,7 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
                                                      replace=True)].T
         else:
             grasp_pc = grasp_pc.transpose((2, 1, 0))
-        score = level_score + refine_score*0.01
+        score = level_score + refine_score * 0.01
         if score >= self.thresh_bad:
             label = 0
         elif score <= self.thresh_good:
@@ -1091,8 +1093,7 @@ class PointGraspOneViewMultiClassDataset(torch.utils.data.Dataset):
         return self.amount
 
 
-
-if __name__ == '__main__':
+def test_dataset():
     grasp_points_num = 1000
     obj_points_num = 50000
     pc_file_used_num = 20
@@ -1115,3 +1116,7 @@ if __name__ == '__main__':
         project_size=input_size,
     )
     c, d = a.__getitem__(0)
+
+
+if __name__ == '__main__':
+    test_dataset()
