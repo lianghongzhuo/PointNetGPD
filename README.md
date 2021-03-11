@@ -72,6 +72,8 @@ You can download the dataset from: https://tams.informatik.uni-hamburg.de/resear
 ## Generate Your Own Grasp Dataset
 
 1. Download YCB object set from [YCB Dataset](http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/).
+a command line tool for download ycb dataset can be found at: https://github.com/lianghongzhuo/ycb-tools
+
 2. Manage your dataset here:
     ```bash
     mkdir -p $HOME/dataset/ycb_meshes_google/objects
