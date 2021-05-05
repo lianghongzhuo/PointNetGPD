@@ -90,9 +90,13 @@ def worker(i, sample_nums, grasp_amount, good_grasp):
 
     force_closure_quality_config = {}
     canny_quality_config = {}
-    fc_list_sub1 = np.arange(2.0, 0.75, -0.4)
-    fc_list_sub2 = np.arange(0.5, 0.36, -0.05)
-    fc_list = np.concatenate([fc_list_sub1, fc_list_sub2])
+    less_class = True  # less class can accelerate the dataset generate
+    if less_class:
+        fc_list = np.array([2.0, 1.6, 0.6])
+    else:
+        fc_list_sub1 = np.arange(2.0, 0.75, -0.4)
+        fc_list_sub2 = np.arange(0.5, 0.36, -0.05)
+        fc_list = np.concatenate([fc_list_sub1, fc_list_sub2])
     for value_fc in fc_list:
         value_fc = round(value_fc, 2)
         yaml_config['metrics']['force_closure']['friction_coef'] = value_fc
