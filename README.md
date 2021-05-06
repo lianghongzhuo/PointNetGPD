@@ -171,7 +171,7 @@ This code will check the norm calculated by meshpy and pcl library.
 
     Generate point cloud from rgb-d image, you may change the number of process running in parallel if you use a shared host with others
     ```bash
-    cd ..
+    cd $HOME/code/PointNetGPD/PointNetGPD
     python ycb_cloud_generate.py
     ```
     Note: Estimated running time at our `Intel(R) Xeon(R) CPU E5-2690 v4 @ 2.60GHz` dual CPU with 56 Threads is 36 hours. Please also remove objects beyond the capacity of the gripper.

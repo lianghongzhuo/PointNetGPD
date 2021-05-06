@@ -162,9 +162,9 @@ def registeredDepthMapToPointCloud(depthMap, rgbImage, rgbK, refFromRGB, objFrom
             if depth <= 0:
                 if organized:
                     if depth <= 0:
-                        cloud[row, col, 0] = float('nan')
-                        cloud[row, col, 1] = float('nan')
-                        cloud[row, col, 2] = float('nan')
+                        cloud[row, col, 0] = float("nan")
+                        cloud[row, col, 1] = float("nan")
+                        cloud[row, col, 2] = float("nan")
                         cloud[row, col, 3] = 0
                         cloud[row, col, 4] = 0
                         cloud[row, col, 5] = 0
@@ -227,53 +227,53 @@ def writePLY(filename, cloud, faces=None):
     num_points = cloud.shape[0] * cloud.shape[1]
 
     header_lines = [
-        'ply',
-        'format ascii 1.0',
-        'element vertex %d' % num_points,
-        'property float x',
-        'property float y',
-        'property float z',
+        "ply",
+        "format ascii 1.0",
+        "element vertex %d" % num_points,
+        "property float x",
+        "property float y",
+        "property float z",
     ]
     if color:
         header_lines.extend([
-            'property uchar diffuse_red',
-            'property uchar diffuse_green',
-            'property uchar diffuse_blue',
+            "property uchar diffuse_red",
+            "property uchar diffuse_green",
+            "property uchar diffuse_blue",
         ])
-    if faces != None:
+    if faces is not None:
         header_lines.extend([
-            'element face %d' % len(faces),
-            'property list uchar int vertex_indices'
+            "element face %d" % len(faces),
+            "property list uchar int vertex_indices"
         ])
 
     header_lines.extend([
-        'end_header',
+        "end_header",
     ])
 
-    f = open(filename, 'w+')
-    f.write('\n'.join(header_lines))
-    f.write('\n')
+    f = open(filename, "w+")
+    f.write("\n".join(header_lines))
+    f.write("\n")
 
     lines = []
     for i in range(cloud.shape[0]):
         for j in range(cloud.shape[1]):
             if color:
-                lines.append('%s %s %s %d %d %d' % tuple(cloud[i, j, :].tolist()))
+                lines.append("%s %s %s %d %d %d" % tuple(cloud[i, j, :].tolist()))
             else:
-                lines.append('%s %s %s' % tuple(cloud[i, j, :].tolist()))
+                lines.append("%s %s %s" % tuple(cloud[i, j, :].tolist()))
 
     for face in faces:
-        lines.append(('%d' + ' %d' * len(face)) % tuple([len(face)] + list(face)))
+        lines.append(("%d" + " %d" * len(face)) % tuple([len(face)] + list(face)))
 
-    f.write('\n'.join(lines) + '\n')
+    f.write("\n".join(lines) + "\n")
     f.close()
 
 
-def writePCD(filename, pointCloud, ascii=True):
+def writePCD(filename, pointCloud, ascii_type=True):
     if len(pointCloud.shape) != 3:
         print("Expected pointCloud to have 3 dimensions. Got %d instead" % len(pointCloud.shape))
         return
-    with open(filename, 'w') as f:
+    with open(filename, "w") as f:
         height = pointCloud.shape[0]
         width = pointCloud.shape[1]
         f.write("# .PCD v.7 - Point Cloud Data file format\n")
@@ -292,7 +292,7 @@ def writePCD(filename, pointCloud, ascii=True):
         f.write("HEIGHT %d\n" % height)
         f.write("VIEWPOINT 0 0 0 1 0 0 0\n")
         f.write("POINTS %d\n" % (height * width))
-        if ascii:
+        if ascii_type:
             f.write("DATA ascii\n")
             for row in range(height):
                 for col in range(width):
@@ -304,32 +304,32 @@ def writePCD(filename, pointCloud, ascii=True):
                         g = int(pointCloud[row, col, 4])
                         b = int(pointCloud[row, col, 5])
                         rgb_int = (r << 16) | (g << 8) | b
-                        packed = pack('i', rgb_int)
-                        rgb = unpack('f', packed)[0]
+                        packed = pack("i", rgb_int)
+                        rgb = unpack("f", packed)[0]
                         f.write(" %.12e\n" % rgb)
         else:
             f.write("DATA binary\n")
             if pointCloud.shape[2] == 6:
                 # These are written as bgr because rgb is interpreted as a single
                 # little-endian float.
-                dt = np.dtype([('x', np.float32),
-                               ('y', np.float32),
-                               ('z', np.float32),
-                               ('b', np.uint8),
-                               ('g', np.uint8),
-                               ('r', np.uint8),
-                               ('I', np.uint8)])
+                dt = np.dtype([("x", np.float32),
+                               ("y", np.float32),
+                               ("z", np.float32),
+                               ("b", np.uint8),
+                               ("g", np.uint8),
+                               ("r", np.uint8),
+                               ("I", np.uint8)])
                 pointCloud_tmp = np.zeros((height * width, 1), dtype=dt)
-                for i, k in enumerate(['x', 'y', 'z', 'r', 'g', 'b']):
+                for i, k in enumerate(["x", "y", "z", "r", "g", "b"]):
                     pointCloud_tmp[k] = pointCloud[:, :, i].reshape((height * width, 1))
                 pointCloud_tmp.tofile(f)
             else:
-                dt = np.dtype([('x', np.float32),
-                               ('y', np.float32),
-                               ('z', np.float32),
-                               ('I', np.uint8)])
+                dt = np.dtype([("x", np.float32),
+                               ("y", np.float32),
+                               ("z", np.float32),
+                               ("I", np.uint8)])
                 pointCloud_tmp = np.zeros((height * width, 1), dtype=dt)
-                for i, k in enumerate(['x', 'y', 'z']):
+                for i, k in enumerate(["x", "y", "z"]):
                     pointCloud_tmp[k] = pointCloud[:, :, i].reshape((height * width, 1))
                 pointCloud_tmp.tofile(f)
 
@@ -345,12 +345,12 @@ def getRGBFromDepthTransform(calibration, camera, referenceCamera):
 
 
 def generate(path):
-    path = path.split('/')
+    path = path.split("/")
     # Parameters
     ycb_data_folder = path[0]  # Folder that contains the ycb data.
     target_object = path[1]  # Full name of the target object.
-    viewpoint_camera = path[2].split('_')[0]  # Camera which the viewpoint will be generated.
-    viewpoint_angle = path[2].split('_')[1].split('.')[
+    viewpoint_camera = path[2].split("_")[0]  # Camera which the viewpoint will be generated.
+    viewpoint_angle = path[2].split("_")[1].split(".")[
         0]  # Relative angle of the object w.r.t the camera (angle of the turntable).
 
     referenceCamera = "NP5"  # can only be NP5
@@ -363,7 +363,7 @@ def generate(path):
                              "pc_" + viewpoint_camera + "_" + referenceCamera + "_" + viewpoint_angle + ".npy")
 
     if os.path.exists(ply_fname) and os.path.exists(pcd_fname):
-        print(ycb_data_folder, target_object, viewpoint_camera, viewpoint_angle, 'pass')
+        print(ycb_data_folder, target_object, viewpoint_camera, viewpoint_angle, "pass")
         return
     else:
         print(ycb_data_folder, target_object, viewpoint_camera, viewpoint_angle)
@@ -375,13 +375,13 @@ def generate(path):
         basename = "{0}_{1}".format(viewpoint_camera, viewpoint_angle)
         depthFilename = os.path.join(ycb_data_folder, target_object, basename + ".h5")
         rgbFilename = os.path.join(ycb_data_folder, target_object, basename + ".jpg")
-        pbmFilename = os.path.join(ycb_data_folder, target_object, 'masks', basename + "_mask.pbm")
+        pbmFilename = os.path.join(ycb_data_folder, target_object, "masks", basename + "_mask.pbm")
 
         calibrationFilename = os.path.join(ycb_data_folder, target_object, "calibration.h5")
-        objFromrefFilename = os.path.join(ycb_data_folder, target_object, 'poses',
-                                          '{0}_{1}_pose.h5'.format(referenceCamera, viewpoint_angle))
-        calibration = h5.File(calibrationFilename, 'r')
-        objFromref = h5.File(objFromrefFilename, 'r')['H_table_from_reference_camera'][:]
+        objFromrefFilename = os.path.join(ycb_data_folder, target_object, "poses",
+                                          "{0}_{1}_pose.h5".format(referenceCamera, viewpoint_angle))
+        calibration = h5.File(calibrationFilename, "r")
+        objFromref = h5.File(objFromrefFilename, "r")["H_table_from_reference_camera"][:]
 
         if not os.path.isfile(rgbFilename):
             print("The rgbd data is not available for the target object \"%s\"." % target_object)
@@ -393,7 +393,7 @@ def generate(path):
         depthScale = np.array(calibration["{0}_ir_depth_scale".format(viewpoint_camera)]) * .0001  # 100um to meters
         H_RGBFromDepth, refFromRGB = getRGBFromDepthTransform(calibration, viewpoint_camera, referenceCamera)
 
-        unregisteredDepthMap = h5.File(depthFilename, 'r')["depth"][:]
+        unregisteredDepthMap = h5.File(depthFilename, "r")["depth"][:]
         unregisteredDepthMap = filterDiscontinuities(unregisteredDepthMap) * depthScale
 
         registeredDepthMap = registerDepthMap(unregisteredDepthMap,
@@ -410,15 +410,15 @@ def generate(path):
         writePCD(pcd_fname, pointCloud)
         np.save(npy_fname, pointCloud[:, :, :3].reshape(-1, 3))
     except:
-        f = open('exception.txt', 'a')
-        f.write('/'.join(path) + '\n')
+        f = open("exception.txt", "a")
+        f.write("/".join(path) + "\n")
         f.close()
-        print(ycb_data_folder, target_object, viewpoint_camera, viewpoint_angle, 'failed')
+        print(ycb_data_folder, target_object, viewpoint_camera, viewpoint_angle, "failed")
         return
 
 
 def main():
-    fl = np.array(glob.glob('data/ycb_rgbd/0*/*.jpg'))
+    fl = np.array(glob.glob("data/ycb-tools/models/ycb/*/rgbd/*.jpg"))
     np.random.shuffle(fl)
     cores = mp.cpu_count()
     pool = mp.Pool(processes=cores)
