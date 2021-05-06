@@ -48,7 +48,7 @@ import meshpy.sdf_file as sdf_file
 import meshpy.stp_file as stp_file
 from meshpy import UrdfWriter
 
-from perception import RenderMode
+# from perception import RenderMode
 
 import IPython
 
@@ -1121,7 +1121,7 @@ class Hdf5Dataset(Dataset):
         return Hdf5ObjectFactory.stable_pose(self.stable_pose_data(key), stable_pose_id)
 
     # rendered image data
-    def rendered_images(self, key, stable_pose_id=None, render_mode=RenderMode.DEPTH):
+    def rendered_images(self, key, stable_pose_id=None, render_mode=None):
         """ Rendered images for the given object for the given render mode.
 
         Parameters
@@ -1138,6 +1138,8 @@ class Hdf5Dataset(Dataset):
         :obj:`list` of :obj:`perception.ObjectRender`
             list of stored images for the given object
         """
+        if render_mode is None:
+            render_mode = RenderMode.DEPTH
         if stable_pose_id is not None and stable_pose_id not in list(self.stable_pose_data(key).keys()):
             logging.warning('Stable pose id %s unknown' %(stable_pose_id))
             return[]
@@ -1163,7 +1165,7 @@ class Hdf5Dataset(Dataset):
                 rendered_image.stable_pose = stable_pose
         return rendered_images
 
-    def has_rendered_images(self, key, stable_pose_id=None, render_mode=RenderMode.DEPTH):
+    def has_rendered_images(self, key, stable_pose_id=None, render_mode=None):
         """ Checks whether or not a graspable has rendered images for the given stable pose and image type.
 
         Parameters
@@ -1180,6 +1182,8 @@ class Hdf5Dataset(Dataset):
         bool
             whether or not the dataset has images for the given pose and modality
         """
+        if render_mode is None:
+            render_mode = RenderMode.DEPTH
         if stable_pose_id is not None and stable_pose_id not in list(self.stable_pose_data(key).keys()):
             return False
         if stable_pose_id is not None and RENDERED_IMAGES_KEY not in list(self.stable_pose_data(key)[stable_pose_id].keys()):
@@ -1192,7 +1196,7 @@ class Hdf5Dataset(Dataset):
             return False
         return True
 
-    def delete_rendered_images(self, key, stable_pose_id=None, render_mode=RenderMode.DEPTH):
+    def delete_rendered_images(self, key, stable_pose_id=None, render_mode=None):
         """ Delete previously rendered images.
 
         Parameters
@@ -1209,12 +1213,14 @@ class Hdf5Dataset(Dataset):
         bool
             whether or not the images were deleted
         """
+        if render_mode is None:
+            render_mode = RenderMode.DEPTH
         if self.has_rendered_images(key, stable_pose_id, render_mode):
             del self.rendered_image_data(key, stable_pose_id)[render_mode]
             return True
         return False
 
-    def store_rendered_images(self, key, rendered_images, stable_pose_id=None, render_mode=RenderMode.DEPTH, force_overwrite=False):
+    def store_rendered_images(self, key, rendered_images, stable_pose_id=None, render_mode=None, force_overwrite=False):
         """ Store rendered images of the object for a given stable pose.
         Parameters
         ----------
@@ -1234,6 +1240,8 @@ class Hdf5Dataset(Dataset):
         bool
             whether or not the images were written
         """
+        if render_mode is None:
+            render_mode = RenderMode.DEPTH
         if stable_pose_id is not None and stable_pose_id not in list(self.stable_pose_data(key).keys()):
             raise ValueError('Stable pose id %s unknown' %(stable_pose_id))
         if stable_pose_id is not None and RENDERED_IMAGES_KEY not in list(self.stable_pose_data(key)[stable_pose_id].keys()):

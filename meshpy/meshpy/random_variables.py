@@ -10,7 +10,8 @@ import scipy.stats as ss
 
 from autolab_core import Point, RigidTransform, RandomVariable
 from autolab_core.utils import sph2cart, cart2sph
-from perception import CameraIntrinsics, BinaryImage, ColorImage, DepthImage, ObjectRender, RenderMode
+from autolab_core import CameraIntrinsics, BinaryImage, ColorImage, DepthImage
+# from perception import ObjectRender, RenderMode
 
 from .mesh_renderer import VirtualCamera, SceneObject
 

@@ -16,7 +16,7 @@ from skimage.transform import resize
 
 from autolab_core import RigidTransform
 from meshpy import Mesh3D
-from perception import BinaryImage
+from autolab_core import BinaryImage
 
 
 class ImageToMeshConverter:

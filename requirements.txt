@@ -1,4 +1,4 @@
-networkx==2.2
+networkx
 scipy
 h5py
 numpy
@@ -13,10 +13,10 @@ trimesh
 pyhull
 cvxopt
 pandas
-visualization
 pyquaternion
 numba
 autolab-core
 autolab-perception
 shapely
-
+rospkg
+imageio

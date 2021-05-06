@@ -10,7 +10,9 @@ PointNetGPDchann_3/
 PointNetGPD/fullpc/
 PointNetGPD/1view/
 # Created by https://www.gitignore.io/api/vim,python,pycharm,jupyternotebook
-
+SDFGen/
+mayavi/
+visualization/
 ### JupyterNotebook ###
 .ipynb_checkpoints
 */.ipynb_checkpoints/*

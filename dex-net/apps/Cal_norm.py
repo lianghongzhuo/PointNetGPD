@@ -17,12 +17,12 @@ import time
 from mayavi import mlab
 
 
-def show_obj(surface_points_, color='b'):
-    if color == 'b':
+def show_obj(surface_points_, color="b"):
+    if color == "b":
         color_f = (0, 0, 1)
-    elif color == 'r':
+    elif color == "r":
         color_f = (1, 0, 0)
-    elif color == 'g':
+    elif color == "g":
         color_f = (0, 1, 0)
     else:
         color_f = (1, 1, 1)
@@ -34,7 +34,7 @@ def get_file_name(file_dir_):
     file_list = []
     for root, dirs, files in os.walk(file_dir_):
         # print(root)  # current path
-        if root.count('/') == file_dir_.count('/')+1:
+        if root.count("/") == file_dir_.count("/")+1:
             file_list.append(root)
         # print(dirs)  # all the directories in current path
         # print(files)  # all the files in current path
@@ -48,19 +48,19 @@ def show_grasp_norm(grasp_bottom_center, grasp_axis):
     mlab.plot3d([un1[0], un2[0]], [un1[1], un2[1]], [un1[2], un2[2]], color=(0, 1, 0), tube_radius=0.0005)
 
 
-def show_pcl_norm(grasp_bottom_center, normal_, color='r', clear=False):
+def show_pcl_norm(grasp_bottom_center, normal_, color="r", clear=False):
     if clear:
         plt.figure()
         plt.clf()
         plt.gcf()
         plt.ion()
 
-    ax = plt.gca(projection='3d')
+    ax = plt.gca(projection="3d")
     un1 = grasp_bottom_center + 0.5 * normal_ * 0.05
-    ax.scatter(un1[0], un1[1], un1[2], marker='x', c=color)
+    ax.scatter(un1[0], un1[1], un1[2], marker="x", c=color)
     un2 = grasp_bottom_center
-    ax.scatter(un2[0], un2[1], un2[2], marker='^', c='g')
-    ax.plot([un1[0], un2[0]], [un1[1], un2[1]], [un1[2], un2[2]], 'b-', linewidth=1)  # bi normal
+    ax.scatter(un2[0], un2[1], un2[2], marker="^", c="g")
+    ax.plot([un1[0], un2[0]], [un1[1], un2[1]], [un1[2], un2[2]], "b-", linewidth=1)  # bi normal
 
 
 def do_job(job_i):
@@ -69,20 +69,20 @@ def do_job(job_i):
     print("done job", job_i, ii)
 
 
-if __name__ == '__main__':
-    home_dir = os.environ['HOME']
-    file_dir = home_dir + "/dataset/ycb_meshes_google/objects"
+if __name__ == "__main__":
+    home_dir = os.environ["HOME"]
+    file_dir = home_dir + "/code/PointNetGPD/PointNetGPD/data/ycb-tools/models/ycb"
     mlab.figure(bgcolor=(1, 1, 1), fgcolor=(0.7, 0.7, 0.7))
     file_list_all = get_file_name(file_dir)
     object_numbers = file_list_all.__len__()
-    i = 0  # index of objects to define which object to show
+    i = 1  # index of objects to define which object to show
     if os.path.exists(str(file_list_all[i]) + "/google_512k/nontextured.obj"):
         of = ObjFile(str(file_list_all[i]) + "/google_512k/nontextured.obj")
         sf = SdfFile(str(file_list_all[i]) + "/google_512k/nontextured.sdf")
 
     else:
-        print("can't find any obj or sdf file!")
-        raise NameError("can't find any obj or sdf file!")
+        print("can not find any obj or sdf file!")
+        raise NameError("can not find any obj or sdf file!")
     mesh = of.read()
     sdf = sf.read()
     graspable = GraspableObject3D(sdf, mesh)

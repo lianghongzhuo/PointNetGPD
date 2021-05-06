@@ -8,8 +8,6 @@
 import logging
 logging.getLogger().setLevel(logging.FATAL)
 import os
-import sys
-import re
 from meshpy.obj_file import ObjFile
 from meshpy.sdf_file import SdfFile
 from dexnet.grasping import GraspableObject3D
@@ -35,7 +33,7 @@ check_pcd_grasp_points = False
 
 def open_npy_and_obj(name_to_open_):
     npy_m_ = np.load(name_to_open_)
-    file_dir = home_dir + "/PointNetGPD/data/ycb_meshes_google/"
+    file_dir = home_dir + "/PointNetGPD/data/ycb-tools/models/ycb/"
     object_name_ = name_to_open_.split("/")[-1][:-4]
     ply_name_ = file_dir + object_name_ + "/google_512k/nontextured.ply"
     if not check_pcd_grasp_points:
