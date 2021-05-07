@@ -20,3 +20,4 @@ autolab-perception
 shapely
 rospkg
 imageio
+tensorboardx
