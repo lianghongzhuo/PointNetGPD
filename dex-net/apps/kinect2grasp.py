@@ -1,18 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Author     : Hongzhuo Liang
 # E-mail     : liang@informatik.uni-hamburg.de
 # Description:
 # Date       : 05/08/2018 6:04 PM
 # File Name  : kinect2grasp.py
-
-import torch
 import rospy
 from sensor_msgs.msg import PointCloud2
 from visualization_msgs.msg import MarkerArray
 from visualization_msgs.msg import Marker
-import tf
-import moveit_commander
 import numpy as np
 import pointclouds
 import voxelgrid
@@ -24,7 +20,6 @@ import os
 from pyquaternion import Quaternion
 import sys
 from os import path
-import time
 from scipy.stats import mode
 import multiprocessing as mp
 try:
@@ -34,11 +29,6 @@ except ImportError:
     print("Please install grasp msgs from https://github.com/TAMS-Group/gpd_grasp_msgs in your ROS workspace")
     exit()
 
-try:
-    from mayavi import mlab
-except ImportError:
-    print("Can not import mayavi")
-    mlab = None
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath("__file__")))))
 sys.path.append(os.environ['HOME'] + "/code/PointNetGPD/PointNetGPD")
 from main_test import test_network, model, args
@@ -93,14 +83,6 @@ def remove_table_points(points_voxel_, vis=False):
         pre_del = pre_del[1:]
         new_points_voxel_ = np.delete(points_voxel_, pre_del, 0)
     print("Success delete [[ {} ]] points from the table!".format(len(points_voxel_) - len(new_points_voxel_)))
-
-    if vis:
-        p = points_voxel_
-        mlab.points3d(p[:, 0], p[:, 1], p[:, 2], scale_factor=0.002, color=(1, 0, 0))
-        p = new_points_voxel_
-        mlab.points3d(p[:, 0], p[:, 1], p[:, 2], scale_factor=0.002, color=(0, 0, 1))
-        mlab.points3d(0, 0, 0, scale_factor=0.01, color=(0, 1, 0))  # plot 0 point
-        mlab.show()
     return new_points_voxel_
 
 
@@ -115,13 +97,6 @@ def remove_white_pixel(msg, points_, vis=False):
     ind_good_points_ = np.sum(rgb_colors[:] < 210, axis=-1) == 3
     ind_good_points_ = np.where(ind_good_points_ == 1)[0]
     new_points_ = points_[ind_good_points_]
-    if vis:
-        p = points_
-        mlab.points3d(p[:, 0], p[:, 1], p[:, 2], scale_factor=0.002, color=(1, 0, 0))
-        p = new_points_
-        mlab.points3d(p[:, 0], p[:, 1], p[:, 2], scale_factor=0.002, color=(0, 0, 1))
-        mlab.points3d(0, 0, 0, scale_factor=0.01, color=(0, 1, 0))  # plot 0 point
-        mlab.show()
     return new_points_
 
 
@@ -257,16 +232,6 @@ def check_collision_square(grasp_bottom_center, approach_normal, binormal,
             has_p = False
         else:
             has_p = True
-
-    vis = False
-    if vis:
-        p = points_g
-        mlab.points3d(p[:, 0], p[:, 1], p[:, 2], scale_factor=0.002, color=(0, 0, 1))
-        p = points_g[points_in_area]
-        mlab.points3d(p[:, 0], p[:, 1], p[:, 2], scale_factor=0.002, color=(1, 0, 0))
-        p = ags.get_hand_points(np.array([0, 0, 0]), np.array([1, 0, 0]), np.array([0, 1, 0]))
-        mlab.points3d(p[:, 0], p[:, 1], p[:, 2], scale_factor=0.005, color=(0, 1, 0))
-        mlab.show()
 
     return has_p, points_in_area, points_g
 
@@ -440,17 +405,11 @@ if __name__ == '__main__':
     rate = rospy.Rate(10)
     rospy.set_param("/robot_at_home", "true")  # only use when in simulation test.
     rospy.loginfo("getting transform from kinect2 to table top")
-    cam_pos = []
-    listener = tf.TransformListener()
-    get_transform = False
-    while not get_transform:
-        try:
-            cam_pos, _ = listener.lookupTransform('/table_top', '/kinect2_ir_optical_frame', rospy.Time(0))
-            get_transform = True
-            rospy.loginfo("got transform complete")
-        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            continue
-
+    cam_pos = None
+    if cam_pos is None:
+        print("Please change the above line to the position between /table_top and /kinect2_ir_optical_frame")
+        print("In ROS, you can run: rosrun tf tf_echo /table_top /kinect2_ir_optical_frame")
+        exit()
     while not rospy.is_shutdown():
         if rospy.get_param("/robot_at_home") == "false":
             robot_at_home = False
