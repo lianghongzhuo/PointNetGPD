@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import argparse
-import os
 import time
 import torch
 import torch.utils.data
@@ -17,7 +16,7 @@ parser = argparse.ArgumentParser(description="pointnetGPD")
 parser.add_argument("--cuda", action="store_true", default=False)
 parser.add_argument("--gpu", type=int, default=0)
 parser.add_argument("--load-model", type=str,
-                    default="../data/pointgpd_3class.model")
+                    default="../data/pointnetgpd_3class.model")
 parser.add_argument("--show_final_grasp", action="store_true", default=False)
 parser.add_argument("--tray_grasp", action="store_true", default=False)
 parser.add_argument("--using_mp", action="store_true", default=False)
@@ -37,7 +36,7 @@ if args.model_type == "100":
 elif args.model_type == "50":
     args.load_model = "../data/pointgpd_50_points.model"
 elif args.model_type == "3class":  # input points number is 500
-    args.load_model = "../data/pointgpd_3class.model"
+    args.load_model = "../data/pointnetgpd_3class.model"
 else:
     print("Using default model file")
 model = torch.load(args.load_model, map_location="cpu")
