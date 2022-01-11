@@ -11,12 +11,19 @@ To further improve our proposed model, we generate a larger-scale grasp dataset 
 
 [![Video for PointNetGPD](https://img.youtube.com/vi/RBFFCLiWhRw/0.jpg )](https://www.youtube.com/watch?v=RBFFCLiWhRw)
 ## Before Install
-All the code should be installed in the following directory:
+- All the code should be installed in the following directory:
 ```
 mkdir -p $HOME/code/
 cd $HOME/code/
 ```
+
+- Set environment variable `PointNetGPD_FOLDER` in your `$HOME/.bashrc` file.
+```
+export PointNetGPD_FOLDER=$HOME/code/PointNetGPD
+```
+
 ## Install all the requirements (Using a virtual environment is recommended)
+1. Install `pcl-tools` via `sudo apt install pcl-tools`.
 1. An example for create a virtual environment: `conda create -n pointnetgpd python=3.7 numpy ipython matplotlib`
 1. `conda install mayavi -c conda-forge`
 1. Make sure in your Python environment do not have same package named ```meshpy``` or ```dexnet```.
@@ -29,32 +36,25 @@ cd $HOME/code/
 
 1. Install our requirements in `requirements.txt`
     ```bash
-    cd $HOME/code/PointNetGPD
+    cd $PointNetGPD_FOLDER
     pip install -r requirements.txt
     ```
 1. Install our modified meshpy (Modify from [Berkeley Automation Lab: meshpy](https://github.com/BerkeleyAutomation/meshpy))
     ```bash
-    cd $HOME/code/PointNetGPD/meshpy
+    cd $PointNetGPD_FOLDER/meshpy
     python setup.py develop
     ```
 
 1. Install our modified dex-net (Modify from [Berkeley Automation Lab: dex-net](https://github.com/BerkeleyAutomation/dex-net))
     ```bash
-    cd $HOME/code/PointNetGPD/dex-net
+    cd $PointNetGPD_FOLDER/dex-net
     python setup.py develop
     ```
-1. Install visualization:
-   ```
-   cd $HOME/code/PointNetGPD/
-   git clone https://github.com/lianghongzhuo/visualization.git
-   cd visualization
-   python setup.py develop
-   ```
 1. Modify the gripper configurations to your own gripper
     ```bash
-    vim $HOME/code/PointNetGPD/dex-net/data/grippers/robotiq_85/params.json
+    vim $PointNetGPD_FOLDER/dex-net/data/grippers/robotiq_85/params.json
     ```
-    These parameters are used for dataset generation：
+    These parameters are used for dataset generation:
     ```bash
     "min_width":
     "force_limit":
@@ -83,12 +83,12 @@ You can download the dataset from: https://tams.informatik.uni-hamburg.de/resear
 1. Download YCB object set from [YCB Dataset](http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/).
 A command line tool for download ycb dataset can be found at: [ycb-tools](https://github.com/lianghongzhuo/ycb-tools).
    ```bash
-   cd $HOME/code/PointNetGPD/PointNetGPD/data
+   cd $PointNetGPD_FOLDER/PointNetGPD/data
    git clone https://github.com/lianghongzhuo/ycb-tools
    cd ycb-tools
    python download_ycb_dataset.py rgbd_512
    ```
-2. Manage your dataset at: `$HOME/code/PointNetGPD/PointNetGPD/data`
+2. Manage your dataset at: `$PointNetGPD_FOLDER/PointNetGPD/data`
     Every object should have a folder, structure like this:
     ```
     ├002_master_chef_can
@@ -124,17 +124,17 @@ A command line tool for download ycb dataset can be found at: [ycb-tools](https:
     python setup.py build_ext -i
     python setup.py develop
     ```
-    - If you use **ubuntu 18.04** and/or **conda environment**, you may encounter a compile error when install python-pcl, this is because conda has a higer version of vtk, here is a work around:
+    - If you use **ubuntu 18.04** and/or **conda environment**, you may encounter a compile error when install python-pcl, this is because conda has a higher version of vtk, here is a workaround:
         - `conda install vtk` or `pip install vtk`
         - Use my fork: https://github.com/lianghongzhuo/python-pcl.git
 5. Generate sdf file for each nontextured.obj file using SDFGen by running:
     ```bash
-    cd $HOME/code/PointNetGPD/dex-net/apps
+    cd $PointNetGPD_FOLDER/dex-net/apps
     python read_file_sdf.py
     ```
 6. Generate dataset by running the code:
     ```bash
-    cd $HOME/code/PointNetGPD/dex-net/apps
+    cd $PointNetGPD_FOLDER/dex-net/apps
     python generate-dataset-canny.py [prefix]
     ```
     where `[prefix]` is optional, it will add a prefix on the generated files.
@@ -142,23 +142,23 @@ A command line tool for download ycb dataset can be found at: [ycb-tools](https:
 ## Visualization tools
 - Visualization grasps
     ```bash
-    cd $HOME/code/PointNetGPD/dex-net/apps
+    cd $PointNetGPD_FOLDER/dex-net/apps
     python read_grasps_from_file.py
     ```
     Note:
-    - This file will visualize the grasps in `$HOME/code/PointNetGPD/PointNetGPD/data/ycb_grasp/` folder
+    - This file will visualize the grasps in `$PointNetGPD_FOLDER/PointNetGPD/data/ycb_grasp/` folder
 
-- Visualization object normals
+- Visualization object normal
     ```bash
-    cd $HOME/code/PointNetGPD/dex-net/apps
+    cd $PointNetGPD_FOLDER/dex-net/apps
     python Cal_norm.py
     ```
-This code will check the norm calculated by meshpy and pcl library.
+This code will check the norm calculated by `meshpy` and `pcl` library.
 
 ## Training the network
 1. Data prepare:
     ```bash
-    cd $HOME/code/PointNetGPD/PointNetGPD/data
+    cd $PointNetGPD_FOLDER/PointNetGPD/data
     ```
 
     Make sure you have the following files, The links to the dataset directory should add by yourself:
@@ -169,16 +169,16 @@ This code will check the norm calculated by meshpy and pcl library.
     └── ycb_tools  (YCB dataset from https://github.com/lianghongzhuo/ycb-tools.git)
     ```
 
-    Generate point cloud from rgb-d image, you may change the number of process running in parallel if you use a shared host with others
+    Generate point cloud from RGB-D image, you may change the number of process running in parallel if you use a shared host with others
     ```bash
-    cd $HOME/code/PointNetGPD/PointNetGPD
+    cd $PointNetGPD_FOLDER/PointNetGPD
     python ycb_cloud_generate.py
     ```
     Note: Estimated running time at our `Intel(R) Xeon(R) CPU E5-2690 v4 @ 2.60GHz` dual CPU with 56 Threads is 36 hours. Please also remove objects beyond the capacity of the gripper.
 
 1. Run the experiments:
     ```bash
-    cd PointNetGPD
+    cd $PointNetGPD_FOLDER/PointNetGPD
     ```
 
     Launch a tensorboard for monitoring
@@ -209,14 +209,14 @@ This code will check the norm calculated by meshpy and pcl library.
 
     Goal of this step is to publish a ROS parameter tell the environment whether the UR5 robot is at home position or not.
     ```
-    cd $HOME/code/PointNetGPD/dex-net/apps
+    cd $PointNetGPD_FOLDER/dex-net/apps
     python get_ur5_robot_state.py
     ```
 2. Run perception code:
     This code will take depth camera ROS info as input, and gives a set of good grasp candidates as output.
     All the input, output messages are using ROS messages.
     ```
-    cd $HOME/code/PointNetGPD/dex-net/apps
+    cd $PointNetGPD_FOLDER/dex-net/apps
     python kinect2grasp.py
 
     arguments:
@@ -251,4 +251,3 @@ If you found PointNetGPD useful in your research, please consider citing:
 - [pyntcloud](https://github.com/daavoo/pyntcloud)
 - [metu-ros-pkg](https://github.com/kadiru/metu-ros-pkg)
 - [mayavi](https://github.com/enthought/mayavi)
-

@@ -17,6 +17,7 @@ pyquaternion
 numba
 autolab-core
 autolab-perception
+visualization
 shapely
 rospkg
 imageio

@@ -20,7 +20,7 @@ from dexnet.grasping import GpgGraspSampler  # temporary way for show 3D gripper
 import glob
 
 # global configurations:
-home_dir = os.environ["HOME"] + "/code/PointNetGPD"
+home_dir = os.environ["PointNetGPD_FOLDER"]
 yaml_config = YamlConfig(home_dir + "/dex-net/test/config.yaml")
 gripper_name = "robotiq_85"
 gripper = RobotGripper.load(gripper_name, home_dir + "/dex-net/data/grippers")
