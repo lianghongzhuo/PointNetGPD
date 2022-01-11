@@ -70,8 +70,7 @@ def do_job(job_i):
 
 
 if __name__ == "__main__":
-    home_dir = os.environ["HOME"]
-    file_dir = home_dir + "/code/PointNetGPD/PointNetGPD/data/ycb-tools/models/ycb"
+    file_dir = os.environ["PointNetGPD_FOLDER"] + "/PointNetGPD/data/ycb-tools/models/ycb"
     mlab.figure(bgcolor=(1, 1, 1), fgcolor=(0.7, 0.7, 0.7))
     file_list_all = get_file_name(file_dir)
     object_numbers = file_list_all.__len__()
@@ -113,7 +112,6 @@ if __name__ == "__main__":
         surface_normal = normals.to_array()
         surface_normal = surface_normal[:, 0:3]
         surface_gg = norm.compute().to_array()[:, 3]
-        # from IPython import embed;embed()
         use_pcl = True
         if use_pcl:
             # for ii in range(surface_normal[0]):

@@ -1292,9 +1292,6 @@ class OldPointGraspSampler(GraspSampler):
             grasp_bottom_center = grasp_bottom_center.reshape(3)
 
             for ind in range(params['max_chain_length']):
-                # if not graspable.sdf.on_surface(graspable.sdf.transform_pt_obj_to_grid(grasp_bottom_center))[0]:
-                #     print('first damn it!')
-                #     from IPython import embed; embed()
                 new_grasp_bottom_center = self.sample_chain(grasp_bottom_center, graspable,
                                                             params, vis)
                 if new_grasp_bottom_center is None:

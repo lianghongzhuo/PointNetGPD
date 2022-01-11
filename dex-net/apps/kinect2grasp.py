@@ -30,14 +30,14 @@ except ImportError:
     exit()
 
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath("__file__")))))
-sys.path.append(os.environ['HOME'] + "/code/PointNetGPD/PointNetGPD")
+sys.path.append(os.environ['PointNetGPD_FOLDER'] + "/PointNetGPD")
 from main_test import test_network, model, args
 import logging
 logging.getLogger().setLevel(logging.FATAL)
 # global config:
-yaml_config = YamlConfig(os.environ['HOME'] + "/code/PointNetGPD/dex-net/test/config.yaml")
+yaml_config = YamlConfig(os.environ['PointNetGPD_FOLDER'] + "/dex-net/test/config.yaml")
 gripper_name = 'robotiq_85'
-gripper = RobotGripper.load(gripper_name, os.environ['HOME'] + "/code/PointNetGPD/dex-net/data/grippers")
+gripper = RobotGripper.load(gripper_name, os.environ['PointNetGPD_FOLDER'] + "/dex-net/data/grippers")
 ags = GpgGraspSamplerPcl(gripper, yaml_config)
 value_fc = 0.4  # no use, set a random number
 num_grasps = 40
@@ -377,7 +377,6 @@ def remove_grasp_outside_tray(grasps_, points_):
         finger_points_ = hand_points_[[1, 2, 3, 4, 9, 10, 13, 14], :]
         # aa = points_[:, :2] - finger_points_[0][:2]  # todo： work of remove outside grasp not finished.
 
-        # from IPython import embed;embed()
         a = finger_points_[:, 0] < x_min
         b = finger_points_[:, 0] > x_max
         c = finger_points_[:, 1] < y_min
@@ -537,7 +536,6 @@ if __name__ == '__main__':
         grasp_msg_list.header.stamp = rospy.Time.now()
         grasp_msg_list.header.frame_id = "/table_top"
 
-        # from IPython import embed;embed()
         if len(real_good_grasp) != 0:
             i = 0
             single_grasp_list_pub = GraspConfigList()

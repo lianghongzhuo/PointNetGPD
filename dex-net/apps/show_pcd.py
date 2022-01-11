@@ -13,7 +13,7 @@ import pcl
 import pickle
 import logging
 logging.getLogger().setLevel(logging.FATAL)
-data_path = os.environ["HOME"] + "/code/PointNetGPD/PointNetGPD/data"
+data_path = os.environ["PointNetGPD_FOLDER"] + "/PointNetGPD/data"
 
 def show_obj(points_, ply_name_,obj_transform, color="b"):
     mlab.figure(bgcolor=(0, 0, 0), fgcolor=(0.7, 0.7, 0.7), size=(1000, 1000))
