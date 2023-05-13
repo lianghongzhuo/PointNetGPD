@@ -24,8 +24,7 @@ export PointNetGPD_FOLDER=$HOME/code/PointNetGPD
 
 ## Install all the requirements (Using a virtual environment is recommended)
 1. Install `pcl-tools` via `sudo apt install pcl-tools`.
-1. An example for create a virtual environment: `conda create -n pointnetgpd python=3.7 numpy ipython matplotlib`
-1. `conda install mayavi -c conda-forge`
+1. An example for create a virtual environment: `conda create -n pointnetgpd python=3.10 numpy ipython matplotlib opencv mayavi -c conda-forge`
 1. Make sure in your Python environment do not have same package named ```meshpy``` or ```dexnet```.
 1. Install PyTorch: https://pytorch.org/get-started/locally/
 1. Clone this repository:
