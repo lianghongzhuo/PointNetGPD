@@ -112,19 +112,10 @@ A command line tool for download ycb dataset can be found at: [ycb-tools](https:
     cmake ..
     make
     ```
-4. Install python pcl library [python-pcl](https://github.com/strawlab/python-pcl):
+4. Install [Open3D](http://www.open3d.org/docs/latest/getting_started.html)
     ```bash
-    git clone https://github.com/strawlab/python-pcl.git
-    pip install --upgrade pip
-    pip install cython
-    pip install numpy
-    cd python-pcl
-    python setup.py build_ext -i
-    python setup.py develop
+    pip install open3d
     ```
-    - If you use **ubuntu 18.04** and/or **conda environment**, you may encounter a compile error when install python-pcl, this is because conda has a higher version of vtk, here is a workaround:
-        - `conda install vtk` or `pip install vtk`
-        - Use my fork: https://github.com/lianghongzhuo/python-pcl.git
 5. Generate `nontextured.sdf` file and `nontextured.obj` file using `pcl-tools` and `SDFGen` by running:
     ```bash
     cd $PointNetGPD_FOLDER/dex-net/apps

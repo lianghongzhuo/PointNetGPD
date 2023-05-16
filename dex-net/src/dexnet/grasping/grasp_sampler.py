@@ -9,11 +9,7 @@ import numpy as np
 import random
 import time
 import scipy.stats as stats
-try:
-    import pcl
-except ImportError as e:
-    print("[grasp_sampler] {}".format(e))
-import dexnet
+import open3d as o3d
 
 from dexnet.grasping import Grasp, Contact3D, ParallelJawPtGrasp3D, PointGraspMetrics3D  # , GraspableObject3D
 from autolab_core import RigidTransform
@@ -854,10 +850,10 @@ class GpgGraspSampler(GraspSampler):
         surface_points, _ = graspable.sdf.surface_points(grid_basis=False)
         all_points = surface_points
         # construct pynt point cloud and voxel grid
-        p_cloud = pcl.PointCloud(surface_points.astype(np.float32))
-        voxel = p_cloud.make_voxel_grid_filter()
-        voxel.set_leaf_size(*([graspable.sdf.resolution * params['voxel_grid_ratio']] * 3))
-        surface_points = voxel.filter().to_array()
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(surface_points.astype(np.float32))
+        pcd = pcd.voxel_down_sample(voxel_size=graspable.sdf.resolution * params["voxel_grid_ratio"])
+        surface_points = np.asarray(pcd.points)
 
         num_surface = surface_points.shape[0]
         sampled_surface_amount = 0
@@ -1032,10 +1028,10 @@ class PointGraspSampler(GraspSampler):
         surface_points, _ = graspable.sdf.surface_points(grid_basis=False)
         all_points = surface_points
         # construct pynt point cloud and voxel grid
-        p_cloud = pcl.PointCloud(surface_points.astype(np.float32))
-        voxel = p_cloud.make_voxel_grid_filter()
-        voxel.set_leaf_size(*([graspable.sdf.resolution * params['voxel_grid_ratio']] * 3))
-        surface_points = voxel.filter().to_array()
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(surface_points.astype(np.float32))
+        pcd = pcd.voxel_down_sample(voxel_size=graspable.sdf.resolution * params["voxel_grid_ratio"])
+        surface_points = np.asarray(pcd.points)
 
         num_surface = surface_points.shape[0]
         sampled_surface_amount = 0
@@ -1397,8 +1393,8 @@ class GpgGraspSamplerPcl(GraspSampler):
     http://journals.sagepub.com/doi/10.1177/0278364917735594
     """
 
-    def sample_grasps(self, point_cloud,points_for_sample, all_normal, num_grasps=20, max_num_samples=200, show_final_grasp=False,
-                      **kwargs):
+    def sample_grasps(self, point_cloud, points_for_sample, all_normal, num_grasps=20, max_num_samples=200,
+                      show_final_grasp=False, **kwargs):
         """
         Returns a list of candidate grasps for graspable object using uniform point pairs from the SDF
 
@@ -1479,9 +1475,13 @@ class GpgGraspSamplerPcl(GraspSampler):
 
             # neighbor = selected_surface + 2 * (np.random.rand(3) - 0.5) * r_ball
 
-            selected_surface_pc = pcl.PointCloud(selected_surface.reshape(1, 3))
-            kd = point_cloud.make_kdtree_flann()
-            kd_indices, sqr_distances = kd.radius_search_for_cloud(selected_surface_pc, r_ball, 100)
+            pcd = o3d.geometry.PointCloud()
+            pcd.points = o3d.utility.Vector3dVector(point_cloud)
+            pcd_tree = o3d.geometry.KDTreeFlann(pcd)
+            print("Find its neighbors with distance less than r_ball")
+            [k, kd_indices, sqr_distances] = pcd_tree.search_hybrid_vector_3d(selected_surface, r_ball, 100)
+            #TODO, here, we replaced pcl kdtee with open3d. verify the result before using it!
+            print("TODO, here, we replaced pcl kdtee with open3d. verify the result before using it!")
             for _ in range(len(kd_indices[0])):
                 if sqr_distances[0, _] != 0:
                     # neighbor = point_cloud[kd_indices]
@@ -1637,11 +1637,7 @@ class GpgGraspSamplerPcl(GraspSampler):
             print("current amount of sampled surface:", sampled_surface_amount)
             if params['debug_vis']:  # not sampled_surface_amount % 5:
                 if len(all_points) > 10000:
-                    pc = pcl.PointCloud(all_points)
-                    voxel = pc.make_voxel_grid_filter()
-                    voxel.set_leaf_size(0.01, 0.01, 0.01)
-                    point_cloud = voxel.filter()
-                    all_points = point_cloud.to_array()
+                    all_points = all_points[:1000, :]
                 self.show_all_grasps(all_points, processed_potential_grasp)
                 self.show_points(all_points, scale_factor=0.008)
                 mlab.show()

@@ -12,7 +12,6 @@ from visualization_msgs.msg import Marker
 import numpy as np
 import pointclouds
 import voxelgrid
-import pcl
 from autolab_core import YamlConfig
 from dexnet.grasping import RobotGripper
 from dexnet.grasping import GpgGraspSamplerPcl
