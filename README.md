@@ -83,12 +83,12 @@ export PointNetGPD_FOLDER=$HOME/code/PointNetGPD
 
 1. Download YCB object set from [YCB Dataset](http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/).
 A command line tool for download ycb dataset can be found at: [ycb-tools](https://github.com/lianghongzhuo/ycb-tools).
-   ```bash
-   cd $PointNetGPD_FOLDER/PointNetGPD/data
-   git clone https://github.com/lianghongzhuo/ycb-tools
-   cd ycb-tools
-   python download_ycb_dataset.py rgbd_512
-   ```
+    ```bash
+    cd $PointNetGPD_FOLDER/data
+    git clone https://github.com/lianghongzhuo/ycb-tools
+    cd ycb-tools
+    python download_ycb_dataset.py rgbd_512
+    ```
 2. Manage your dataset at: `$PointNetGPD_FOLDER/PointNetGPD/data`
     Every object should have a folder, structure like this:
     ```
@@ -153,8 +153,7 @@ This code will check the norm calculated by `meshpy` and `pcl` library.
     ```
     ├── google2cloud.csv  (Transform from google_ycb model to ycb_rgbd model)
     ├── google2cloud.pkl  (Transform from google_ycb model to ycb_rgbd model)
-    ├── ycb_grasp  (generated grasps)
-    └── ycb_tools  (YCB dataset from https://github.com/lianghongzhuo/ycb-tools.git)
+    └── ycb_grasp  (generated grasps)
     ```
 
     Generate point cloud from RGB-D image, you may change the number of process running in parallel if you use a shared host with others

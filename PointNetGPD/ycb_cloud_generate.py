@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import h5py as h5
-from imageio import imread
+from imageio.v2 import imread
 from struct import pack, unpack
 import math
 import multiprocessing as mp
@@ -126,9 +126,9 @@ def registeredDepthMapToPointCloud(depthMap, rgbImage, rgbK, refFromRGB, objFrom
     width = depthMap.shape[1]
 
     if organized:
-        cloud = np.empty((height, width, 6), dtype=np.float)
+        cloud = np.empty((height, width, 6))
     else:
-        cloud = np.empty((1, height * width, 6), dtype=np.float)
+        cloud = np.empty((1, height * width, 6))
 
     goodPointsCount = 0
     for v in range(height):
@@ -311,74 +311,62 @@ def getRGBFromDepthTransform(calibration, camera, referenceCamera):
 def generate(path):
     path = path.split("/")
     # Parameters
-    ycb_data_folder = path[0]  # Folder that contains the ycb data.
-    target_object = path[1]  # Full name of the target object.
-    viewpoint_camera = path[2].split("_")[0]  # Camera which the viewpoint will be generated.
-    viewpoint_angle = path[2].split("_")[1].split(".")[0]  # Relative angle of the object w.r.t the camera
+    ycb_data_folder = "../data/ycb-tools/models/ycb"  # Folder that contains the ycb data.
+    target_object = path[5]  # Full name of the target object.
+    viewpoint_camera = path[7].split("_")[0]  # Camera which the viewpoint will be generated.
+    viewpoint_angle = path[7].split("_")[1].split(".")[0]  # Relative angle of the object w.r.t the camera
     # (angle of the turntable).
 
     referenceCamera = "NP5"  # can only be NP5
 
-    ply_fname = os.path.join(ycb_data_folder, target_object, "clouds",
+    ply_fname = os.path.join(ycb_data_folder, target_object, "rgbd/clouds",
                              "pc_" + viewpoint_camera + "_" + referenceCamera + "_" + viewpoint_angle + ".ply")
-    pcd_fname = os.path.join(ycb_data_folder, target_object, "clouds",
+    pcd_fname = os.path.join(ycb_data_folder, target_object, "rgbd/clouds",
                              "pc_" + viewpoint_camera + "_" + referenceCamera + "_" + viewpoint_angle + ".pcd")
-    npy_fname = os.path.join(ycb_data_folder, target_object, "clouds",
+    npy_fname = os.path.join(ycb_data_folder, target_object, "rgbd/clouds",
                              "pc_" + viewpoint_camera + "_" + referenceCamera + "_" + viewpoint_angle + ".npy")
 
-    if os.path.exists(ply_fname) and os.path.exists(pcd_fname):
+    if os.path.exists(ply_fname) and os.path.exists(pcd_fname) and os.path.exists(npy_fname):
         print(ycb_data_folder, target_object, viewpoint_camera, viewpoint_angle, "pass")
         return
     else:
         print(ycb_data_folder, target_object, viewpoint_camera, viewpoint_angle)
 
-    try:
-        if not os.path.exists(os.path.join(ycb_data_folder, target_object, "clouds")):
-            os.makedirs(os.path.join(ycb_data_folder, target_object, "clouds"))
+    if not os.path.exists(os.path.join(ycb_data_folder, target_object, "rgbd", "clouds")):
+        os.makedirs(os.path.join(ycb_data_folder, target_object, "rgbd", "clouds"))
 
-        basename = "{0}_{1}".format(viewpoint_camera, viewpoint_angle)
-        depthFilename = os.path.join(ycb_data_folder, target_object, basename + ".h5")
-        rgbFilename = os.path.join(ycb_data_folder, target_object, basename + ".jpg")
-        pbmFilename = os.path.join(ycb_data_folder, target_object, "masks", basename + "_mask.pbm")
+    basename = "{0}_{1}".format(viewpoint_camera, viewpoint_angle)
+    depthFilename = os.path.join(ycb_data_folder, target_object, "rgbd", basename + ".h5")
+    rgbFilename = os.path.join(ycb_data_folder, target_object, "rgbd", basename + ".jpg")
+    pbmFilename = os.path.join(ycb_data_folder, target_object, "rgbd", "masks", basename + "_mask.pbm")
+    calibrationFilename = os.path.join(ycb_data_folder, target_object, "rgbd", "calibration.h5")
+    objFromrefFilename = os.path.join(ycb_data_folder, target_object, "rgbd", "poses",
+                                      "{0}_{1}_pose.h5".format(referenceCamera, viewpoint_angle))
+    calibration = h5.File(calibrationFilename, "r")
+    objFromref = h5.File(objFromrefFilename, "r")["H_table_from_reference_camera"][:]
+    rgbImage = imread(rgbFilename)
+    pbmImage = imread(pbmFilename)[:, :, 0]
+    depthK = calibration["{0}_depth_K".format(viewpoint_camera)][:]  # use depth instead of ir
+    rgbK = calibration["{0}_rgb_K".format(viewpoint_camera)][:]
+    depthScale = np.array(calibration["{0}_ir_depth_scale".format(viewpoint_camera)]) * .0001  # 100um to meters
+    H_RGBFromDepth, refFromRGB = getRGBFromDepthTransform(calibration, viewpoint_camera, referenceCamera)
 
-        calibrationFilename = os.path.join(ycb_data_folder, target_object, "calibration.h5")
-        objFromrefFilename = os.path.join(ycb_data_folder, target_object, "poses",
-                                          "{0}_{1}_pose.h5".format(referenceCamera, viewpoint_angle))
-        calibration = h5.File(calibrationFilename, "r")
-        objFromref = h5.File(objFromrefFilename, "r")["H_table_from_reference_camera"][:]
+    unregisteredDepthMap = h5.File(depthFilename, "r")["depth"][:]
+    unregisteredDepthMap = filterDiscontinuities(unregisteredDepthMap) * depthScale
 
-        if not os.path.isfile(rgbFilename):
-            print("The rgbd data is not available for the target object \"%s\"." % target_object)
-            exit(1)
-        rgbImage = imread(rgbFilename)
-        pbmImage = imread(pbmFilename)
-        depthK = calibration["{0}_depth_K".format(viewpoint_camera)][:]  # use depth instead of ir
-        rgbK = calibration["{0}_rgb_K".format(viewpoint_camera)][:]
-        depthScale = np.array(calibration["{0}_ir_depth_scale".format(viewpoint_camera)]) * .0001  # 100um to meters
-        H_RGBFromDepth, refFromRGB = getRGBFromDepthTransform(calibration, viewpoint_camera, referenceCamera)
+    registeredDepthMap = registerDepthMap(unregisteredDepthMap, rgbImage, depthK, rgbK, H_RGBFromDepth)
+    # apply mask
+    registeredDepthMap[pbmImage == 255] = 0
 
-        unregisteredDepthMap = h5.File(depthFilename, "r")["depth"][:]
-        unregisteredDepthMap = filterDiscontinuities(unregisteredDepthMap) * depthScale
+    pointCloud = registeredDepthMapToPointCloud(registeredDepthMap, rgbImage, rgbK, refFromRGB, objFromref)
 
-        registeredDepthMap = registerDepthMap(unregisteredDepthMap, rgbImage, depthK, rgbK, H_RGBFromDepth)
-        # apply mask 
-        registeredDepthMap[pbmImage == 255] = 0
-
-        pointCloud = registeredDepthMapToPointCloud(registeredDepthMap, rgbImage, rgbK, refFromRGB, objFromref)
-
-        writePLY(ply_fname, pointCloud)
-        writePCD(pcd_fname, pointCloud)
-        np.save(npy_fname, pointCloud[:, :, :3].reshape(-1, 3))
-    except:
-        f = open("exception.txt", "a")
-        f.write("/".join(path) + "\n")
-        f.close()
-        print(ycb_data_folder, target_object, viewpoint_camera, viewpoint_angle, "failed")
-        return
+    writePLY(ply_fname, pointCloud)
+    writePCD(pcd_fname, pointCloud)
+    np.save(npy_fname, pointCloud[:, :, :3].reshape(-1, 3))
 
 
 def main():
-    fl = np.array(glob.glob("data/ycb-tools/models/ycb/*/rgbd/*.jpg"))
+    fl = np.array(glob.glob("../data/ycb-tools/models/ycb/*/rgbd/*.jpg"))
     np.random.shuffle(fl)
     cores = mp.cpu_count()
     pool = mp.Pool(processes=cores)

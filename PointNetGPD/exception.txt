@@ -1,0 +1,3 @@
+../data/ycb-tools/models/ycb/009_gelatin_box/rgbd/NP3_15.jpg
+../data/ycb-tools/models/ycb/009_gelatin_box/rgbd/NP3_15.jpg
+../data/ycb-tools/models/ycb/009_gelatin_box/rgbd/NP3_15.jpg
