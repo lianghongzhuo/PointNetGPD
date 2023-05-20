@@ -33,7 +33,7 @@ check_pcd_grasp_points = False
 
 def open_npy_and_obj(name_to_open_):
     npy_m_ = np.load(name_to_open_)
-    file_dir = home_dir + "/PointNetGPD/data/ycb-tools/models/ycb/"
+    file_dir = home_dir + "/data/ycb-tools/models/ycb/"
     object_name_ = name_to_open_.split("/")[-1][:-4]
     ply_name_ = file_dir + object_name_ + "/google_512k/nontextured.ply"
     if not check_pcd_grasp_points:
@@ -198,4 +198,3 @@ if __name__ == "__main__":
         grasps_with_score, obj, ply_name, obj_name = open_npy_and_obj(npy_names[i])
         print("load file {}".format(npy_names[i]))
         ind_good_grasp = show_selected_grasps_with_color(grasps_with_score, ply_name, obj_name, obj)
-

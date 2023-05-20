@@ -215,7 +215,7 @@ class MeshProcessor:
         # trim out vertices that are not referenced
         reffed_v_old_ind = np.where(reffed_array == 1)
         reffed_v_old_ind = reffed_v_old_ind[0]
-        reffed_v_new_ind = np.cumsum(reffed_array).astype(np.int) - 1 # counts number of reffed v before each ind
+        reffed_v_new_ind = np.cumsum(reffed_array).astype(int) - 1 # counts number of reffed v before each ind
 
         try:
             self.mesh_.vertices = vertex_array[reffed_v_old_ind, :]

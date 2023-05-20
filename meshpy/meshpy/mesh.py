@@ -485,7 +485,7 @@ class Mesh3D(object):
         reffed_v_old_ind = reffed_v_old_ind[0]
 
         # Count number of referenced vertices before each index
-        reffed_v_new_ind = np.cumsum(reffed_array).astype(np.int) - 1
+        reffed_v_new_ind = np.cumsum(reffed_array).astype(int) - 1
 
         try:
             self.vertices = self.vertices_[reffed_v_old_ind, :]

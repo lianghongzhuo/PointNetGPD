@@ -56,7 +56,7 @@ def generate_obj_from_ply(file_name_):
 
 if __name__ == "__main__":
     home_dir = os.environ["PointNetGPD_FOLDER"]
-    file_dir = home_dir + "/PointNetGPD/data/ycb-tools/models/ycb"  # for google ycb
+    file_dir = home_dir + "/data/ycb-tools/models/ycb"  # for google ycb
     path_sdfgen = home_dir + "/SDFGen/bin/SDFGen"
     file_list_all = get_file_name(file_dir)
     object_numbers = file_list_all.__len__()

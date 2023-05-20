@@ -236,7 +236,7 @@ class Sdf3D(Sdf):
         # resolution is max dist from surface when surf is orthogonal to diagonal grid cells
         spts, _ = self.surface_points()
         self.center_ = 0.5 * (np.min(spts, axis=0) + np.max(spts, axis=0))
-        self.points_buf_ = np.zeros([Sdf3D.num_interpolants, 3], dtype=np.int)
+        self.points_buf_ = np.zeros([Sdf3D.num_interpolants, 3], dtype=int)
         self.coords_buf_ = np.zeros([3, ])
         self.pts_ = None
 
@@ -399,7 +399,7 @@ class Sdf3D(Sdf):
 
         # regular indexing if integers
         if type(coords[0]) is int and type(coords[1]) is int and type(coords[2]) is int:
-            self.coords_buf_ = self.coords_buf_.astype(np.int)
+            self.coords_buf_ = self.coords_buf_.astype(int)
             return self.data_[self.coords_buf_[0], self.coords_buf_[1], self.coords_buf_[2]]
 
         # otherwise interpolate

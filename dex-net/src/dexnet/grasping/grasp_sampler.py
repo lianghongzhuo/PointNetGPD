@@ -11,19 +11,12 @@ import time
 import scipy.stats as stats
 import open3d as o3d
 
-from dexnet.grasping import Grasp, Contact3D, ParallelJawPtGrasp3D, PointGraspMetrics3D  # , GraspableObject3D
+from dexnet.grasping import Grasp, Contact3D, ParallelJawPtGrasp3D, PointGraspMetrics3D, GraspableObject3D
 from autolab_core import RigidTransform
 import scipy
 # create logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
-USE_OPENRAVE = True
-try:
-    import openravepy as rave
-except ImportError:
-    # logger.warning('Failed to import OpenRAVE')
-    USE_OPENRAVE = False
 
 try:
     import rospy
@@ -350,7 +343,7 @@ class GraspSampler:
         minor_pc = minor_pc / np.linalg.norm(minor_pc)
         matrix = np.hstack([approach_normal.T, binormal.T, minor_pc.T])
         grasp_matrix = matrix.T  # same as cal the inverse
-        if isinstance(graspable, dexnet.grasping.graspable_object.GraspableObject3D):
+        if isinstance(graspable, GraspableObject3D):
             points = graspable.sdf.surface_points(grid_basis=False)[0]
         else:
             points = graspable

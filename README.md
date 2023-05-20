@@ -75,7 +75,9 @@ export PointNetGPD_FOLDER=$HOME/code/PointNetGPD
 ![](data/gripper.svg)
 
 ## Generated Grasp Dataset Download
-You can download the dataset from: https://tams.informatik.uni-hamburg.de/research/datasets/PointNetGPD_grasps_dataset.zip
+- You can download the dataset from: https://tams.informatik.uni-hamburg.de/research/datasets/PointNetGPD_grasps_dataset.zip
+- After download, extract the zip file and rename it to `ycb_grasp`
+- Move the folder to `$PointNetGPD_FOLDER/PointNetGPD/data/`
 
 ## Generate Your Own Grasp Dataset
 
@@ -105,12 +107,9 @@ A command line tool for download ycb dataset can be found at: [ycb-tools](https:
     ```
 3. Install SDFGen from [GitHub](https://github.com/jeffmahler/SDFGen.git):
     ```bash
+    cd $PointNetGPD_FOLDER
     git clone https://github.com/jeffmahler/SDFGen.git
-    cd SDFGen
-    mkdir build
-    cd build
-    cmake ..
-    make
+    cd SDFGen && mkdir build && cd build && cmake .. && make
     ```
 4. Install [Open3D](http://www.open3d.org/docs/latest/getting_started.html)
     ```bash
