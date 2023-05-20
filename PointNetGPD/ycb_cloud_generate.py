@@ -7,7 +7,8 @@ import math
 import multiprocessing as mp
 import glob
 
-
+# objects list that cannot use
+BLACK_LIST_OBJ = ["046_plastic_bolt", "063-b_marbles", "063-c_marbles", "063-f_marbles"]
 # extract pointcloud from rgb-d, then convert it into obj coordinate system(tsdf/poisson reconstructed object)
 
 def im2col(im, psize):
@@ -313,17 +314,19 @@ def generate(path):
     # Parameters
     ycb_data_folder = "../data/ycb-tools/models/ycb"  # Folder that contains the ycb data.
     target_object = path[5]  # Full name of the target object.
+    if target_object in BLACK_LIST_OBJ:
+        return
     viewpoint_camera = path[7].split("_")[0]  # Camera which the viewpoint will be generated.
     viewpoint_angle = path[7].split("_")[1].split(".")[0]  # Relative angle of the object w.r.t the camera
     # (angle of the turntable).
 
     referenceCamera = "NP5"  # can only be NP5
 
-    ply_fname = os.path.join(ycb_data_folder, target_object, "rgbd/clouds",
+    ply_fname = os.path.join(ycb_data_folder, target_object, "rgbd", "clouds",
                              "pc_" + viewpoint_camera + "_" + referenceCamera + "_" + viewpoint_angle + ".ply")
-    pcd_fname = os.path.join(ycb_data_folder, target_object, "rgbd/clouds",
+    pcd_fname = os.path.join(ycb_data_folder, target_object, "rgbd", "clouds",
                              "pc_" + viewpoint_camera + "_" + referenceCamera + "_" + viewpoint_angle + ".pcd")
-    npy_fname = os.path.join(ycb_data_folder, target_object, "rgbd/clouds",
+    npy_fname = os.path.join(ycb_data_folder, target_object, "rgbd", "clouds",
                              "pc_" + viewpoint_camera + "_" + referenceCamera + "_" + viewpoint_angle + ".npy")
 
     if os.path.exists(ply_fname) and os.path.exists(pcd_fname) and os.path.exists(npy_fname):
@@ -339,6 +342,7 @@ def generate(path):
     depthFilename = os.path.join(ycb_data_folder, target_object, "rgbd", basename + ".h5")
     rgbFilename = os.path.join(ycb_data_folder, target_object, "rgbd", basename + ".jpg")
     pbmFilename = os.path.join(ycb_data_folder, target_object, "rgbd", "masks", basename + "_mask.pbm")
+
     calibrationFilename = os.path.join(ycb_data_folder, target_object, "rgbd", "calibration.h5")
     objFromrefFilename = os.path.join(ycb_data_folder, target_object, "rgbd", "poses",
                                       "{0}_{1}_pose.h5".format(referenceCamera, viewpoint_angle))
