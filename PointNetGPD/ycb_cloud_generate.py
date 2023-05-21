@@ -6,6 +6,7 @@ from struct import pack, unpack
 import math
 import multiprocessing as mp
 import glob
+from rich import print
 
 # objects list that cannot use
 BLACK_LIST_OBJ = ["046_plastic_bolt", "063-b_marbles", "063-c_marbles", "063-f_marbles"]
@@ -347,12 +348,16 @@ def generate(path):
     objFromrefFilename = os.path.join(ycb_data_folder, target_object, "rgbd", "poses",
                                       "{0}_{1}_pose.h5".format(referenceCamera, viewpoint_angle))
     calibration = h5.File(calibrationFilename, "r")
+    try:
+        depthK = calibration[f"{viewpoint_camera}_depth_K"][:]  # use depth instead of ir
+    except KeyError:
+        print(f"[red] {path} do not have {viewpoint_camera}_depth_K data [/red]")
+        return
     objFromref = h5.File(objFromrefFilename, "r")["H_table_from_reference_camera"][:]
     rgbImage = imread(rgbFilename)
     pbmImage = imread(pbmFilename)[:, :, 0]
-    depthK = calibration["{0}_depth_K".format(viewpoint_camera)][:]  # use depth instead of ir
-    rgbK = calibration["{0}_rgb_K".format(viewpoint_camera)][:]
-    depthScale = np.array(calibration["{0}_ir_depth_scale".format(viewpoint_camera)]) * .0001  # 100um to meters
+    rgbK = calibration[f"{viewpoint_camera}_rgb_K"][:]
+    depthScale = np.array(calibration[f"{viewpoint_camera}_ir_depth_scale"]) * .0001  # 100um to meters
     H_RGBFromDepth, refFromRGB = getRGBFromDepthTransform(calibration, viewpoint_camera, referenceCamera)
 
     unregisteredDepthMap = h5.File(depthFilename, "r")["depth"][:]
@@ -371,7 +376,6 @@ def generate(path):
 
 def main():
     fl = np.array(glob.glob("../data/ycb-tools/models/ycb/*/rgbd/*.jpg"))
-    np.random.shuffle(fl)
     cores = mp.cpu_count()
     pool = mp.Pool(processes=cores)
     pool.map(generate, fl)

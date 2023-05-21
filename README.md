@@ -195,17 +195,19 @@ This code will check the norm calculated by `meshpy` and `pcl` library.
 1. Get UR5 robot state:
 
     Goal of this step is to publish a ROS parameter tell the environment whether the UR5 robot is at home position or not.
-    ```
+    ```bash
     cd $PointNetGPD_FOLDER/dex-net/apps
     python get_ur5_robot_state.py
     ```
 2. Run perception code:
     This code will take depth camera ROS info as input, and gives a set of good grasp candidates as output.
     All the input, output messages are using ROS messages.
-    ```
+    ```bash
     cd $PointNetGPD_FOLDER/dex-net/apps
     python kinect2grasp.py
+    ```
 
+    ```
     arguments:
     -h, --help                 show this help message and exit
     --cuda                     using cuda for get the network result

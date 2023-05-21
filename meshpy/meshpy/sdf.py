@@ -8,15 +8,8 @@ from abc import ABCMeta, abstractmethod
 import logging
 import numpy as np
 from numbers import Number
-
 import time
-
 from autolab_core import RigidTransform, SimilarityTransform, PointCloud, Point, NormalCloud
-
-
-from sys import version_info
-if version_info[0] != 3:
-    range = xrange
 
 
 # class Sdf(metaclass=ABCMeta):  # work for python3

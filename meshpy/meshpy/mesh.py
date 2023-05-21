@@ -3,22 +3,15 @@ Encapsulates mesh for grasping operations
 Authors: Jeff Mahler and Matt Matl
 """
 import math
-try:
-    import queue
-except ImportError:
-    import Queue as queue
+import queue
 import os
 import random
-from subprocess import Popen
 import sys
-
 import numpy as np
 import scipy.spatial as ss
 import sklearn.decomposition
 import trimesh as tm
-
 from autolab_core import RigidTransform, Point, Direction, PointCloud, NormalCloud
-
 from . import obj_file
 from . import stable_pose as sp
 
@@ -1024,7 +1017,7 @@ class Mesh3D(object):
                         topple_tri = neighboring_tri
 
             except np.linalg.LinAlgError:
-                logging.warning('Failed to solve linear system')
+                print('Failed to solve linear system')
 
         # check solution
         if topple_tri is None:
