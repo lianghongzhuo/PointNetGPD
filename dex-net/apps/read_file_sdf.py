@@ -60,7 +60,8 @@ if __name__ == "__main__":
     path_sdfgen = home_dir + "/SDFGen/bin/SDFGen"
     file_list_all = get_file_name(file_dir)
     object_numbers = file_list_all.__len__()
-
+    if file_list_all == []:
+        print(f"[ERROR] There is no file in {file_dir}, Please check your data folder")
     # generate obj from ply file
     for i in file_list_all:
         generate_obj_from_ply(i + "/google_512k/nontextured.ply")
