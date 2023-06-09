@@ -175,7 +175,7 @@ This code will check the norm calculated by `meshpy` and `pcl` library.
 
     and run an experiment for 200 epoch
     ```
-    python main_1v.py --epoch 200 --mode train --batch-size x (x>1)
+    python main_1v.py --epoch 200 --mode train --batch-size x (x>=16)
     ```
 
     File name and corresponding experiment:
