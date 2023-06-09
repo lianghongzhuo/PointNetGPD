@@ -12,7 +12,7 @@ import numpy as np
 from tensorboardX import SummaryWriter
 from torch.optim.lr_scheduler import StepLR
 
-from model.dataset import PointGraspDataset, PointGraspMultiViewDataset
+from model.dataset import PointGraspDataset
 from model.pointnet import PointNetCls, DualPointNetCls
 
 parser = argparse.ArgumentParser(description='pointnetGPD')
@@ -26,8 +26,7 @@ parser.add_argument('--lr', type=float, default=0.005)
 parser.add_argument('--load-model', type=str, default='')
 parser.add_argument('--load-epoch', type=int, default=-1)
 parser.add_argument('--model-path', type=str, default='./assets/learned_models',
-                   help='pre-trained model path')
-parser.add_argument('--data-path', type=str, default='./data', help='data path')
+                    help='pre-trained model path')
 parser.add_argument('--log-interval', type=int, default=10)
 parser.add_argument('--save-interval', type=int, default=1)
 
@@ -60,7 +59,6 @@ train_loader = torch.utils.data.DataLoader(
         obj_points_num=obj_points_num,
         grasp_points_num=grasp_points_num,
         pc_file_used_num=pc_file_used_num,
-        path=args.data_path,
         tag='train',
         grasp_amount_per_file=6500,
         thresh_good=thresh_good,
@@ -79,7 +77,6 @@ test_loader = torch.utils.data.DataLoader(
         obj_points_num=obj_points_num,
         grasp_points_num=grasp_points_num,
         pc_file_used_num=pc_file_used_num,
-        path=args.data_path,
         tag='test',
         grasp_amount_per_file=500,
         thresh_good=thresh_good,

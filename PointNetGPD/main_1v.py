@@ -27,7 +27,6 @@ parser.add_argument('--load-model', type=str, default='')
 parser.add_argument('--load-epoch', type=int, default=-1)
 parser.add_argument('--model-path', type=str, default='./assets/learned_models',
                     help='pre-trained model path')
-parser.add_argument('--data-path', type=str, default='./data', help='data path')
 parser.add_argument('--log-interval', type=int, default=10)
 parser.add_argument('--save-interval', type=int, default=1)
 
@@ -116,7 +115,6 @@ def main():
     train_loader = torch.utils.data.DataLoader(
         PointGraspOneViewDataset(
             grasp_points_num=grasp_points_num,
-            path=args.data_path,
             tag='train',
             grasp_amount_per_file=6500,
             thresh_good=thresh_good,
@@ -133,7 +131,6 @@ def main():
     test_loader = torch.utils.data.DataLoader(
         PointGraspOneViewDataset(
             grasp_points_num=grasp_points_num,
-            path=args.data_path,
             tag='test',
             grasp_amount_per_file=500,
             thresh_good=thresh_good,
