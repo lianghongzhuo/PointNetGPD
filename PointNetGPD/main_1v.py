@@ -33,7 +33,7 @@ parser.add_argument('--save-interval', type=int, default=1)
 args = parser.parse_args()
 
 args.cuda = args.cuda if torch.cuda.is_available else False
-
+os.makedirs(args.model_path, exist_ok=True)
 if args.cuda:
     torch.cuda.manual_seed(1)
 
