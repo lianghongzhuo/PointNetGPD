@@ -16,7 +16,8 @@ All the cores of a computer can do the job parallel.
 pre request:
 sudo apt install pcl-tools
 """
-
+# file_resolution = "google_512k"
+file_resolution = "google_16k"
 
 def get_file_name(file_dir_):
     file_list = []
@@ -41,7 +42,7 @@ def generate_sdf(path_to_sdfgen, obj_filename, dim, padding):
 
 
 def do_job_convert_obj_to_sdf(x):
-    input_file = str(file_list_all[x]) + "/google_512k/nontextured.obj"
+    input_file = str(file_list_all[x]) + f"/{file_resolution}/nontextured.obj"
     if os.path.isfile(input_file):
         generate_sdf(path_sdfgen, input_file, 100, 5)  # for google scanner
     print("Done job number", x)
@@ -64,7 +65,7 @@ if __name__ == "__main__":
         print(f"[ERROR] There is no file in {file_dir}, Please check your data folder")
     # generate obj from ply file
     for i in file_list_all:
-        generate_obj_from_ply(i + "/google_512k/nontextured.ply")
+        generate_obj_from_ply(i + f"/{file_resolution}/nontextured.ply")
         print("finish", i)
     # The operation for the multi core
     cores = multiprocessing.cpu_count()

@@ -88,6 +88,8 @@ A command line tool for download ycb dataset can be found at: [ycb-tools](https:
     git clone https://github.com/lianghongzhuo/ycb-tools
     cd ycb-tools
     python download_ycb_dataset.py rgbd_512
+    # or
+    python download_ycb_dataset.py google_16k
     ```
 2. Manage your dataset at: `$PointNetGPD_FOLDER/PointNetGPD/data`
     Every object should have a folder, structure like this:
