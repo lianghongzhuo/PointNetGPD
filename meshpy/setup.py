@@ -18,7 +18,7 @@ class PostInstallCmd(install):
 requirements = [
     'numpy',
     'scipy',
-    'sklearn',
+    'scikit-learn',
     'Pillow',
 ]
 
